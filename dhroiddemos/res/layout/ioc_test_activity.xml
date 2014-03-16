@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/asserttext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="assert" />
+
+    <Button
+        android:id="@+id/assertFile"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="assert文件 安装文件" />
+
+        <TextView
+        android:id="@+id/resstring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="res" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/grey_dark_line" />
+
+        <TextView
+        android:id="@+id/extras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="res" />
+        <TextView
+        android:id="@+id/inject_stand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="res" />
+</LinearLayout>

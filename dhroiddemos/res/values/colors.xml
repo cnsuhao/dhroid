@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    
+      <!--白-->
+    <color name="white">#ffffff</color>
+    <!-- 透明白-->
+    <color name="white_alpha45">#2dffffff</color>
+    <color name="black_alpha_bg">#dc000000</color>
+    <!-- 深灰色  -->
+    <color name="grey_dark">#444444</color>
+    <!-- 浅灰色 -->
+    <color name="grey_light">#999999</color>
+     <!-- 注释色 -->
+    <color name="note">#cccccc</color>
+    <!-- 链接色 -->
+    <color name="link">#1aadc0</color>
+    <!-- 警示/突出色-->
+    <color name="alert">#ed5555</color>
+    <!-- 帮助色-->
+    <color name="help">#fdc870</color>
+  <color name="list_line">#dddddd</color> 
+</resources>

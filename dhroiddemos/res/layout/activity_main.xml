@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+  <Button
+        android:id="@+id/ioctest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IOC测试demo" />
+    <Button
+        android:id="@+id/dbtest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="数据库dhdb测试demo" />
+  <Button
+        android:id="@+id/nettest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="网络dhnet测试demo" />
+  <Button
+        android:id="@+id/adaptertest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="adapter网络测试demo" />
+  <Button
+        android:id="@+id/eventtest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="事件总线eventbus测试demo" />
+    <Button
+        android:id="@+id/perferencetest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="高级Perference测试demo" />
+  
+  <Button
+        android:id="@+id/othertest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="其他测试demo" />
+    
+    
+    
+</LinearLayout>

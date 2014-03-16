@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLength="200"
+        android:text="返回结果" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+         <Button
+        android:id="@+id/gettest"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get" />
+   <Button
+        android:id="@+id/getdialogtest"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get对话框" />
+    
+    <Button
+        android:id="@+id/posttest"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="post" />
+        <Button
+        android:id="@+id/postdialogtest"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="post对话框" />
+    </LinearLayout>
+<TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="缓存策略" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+            <Button
+        android:id="@+id/cache_only"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CACHE_ONLY" />
+                <Button
+        android:id="@+id/cache_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CACHE_AndRefresh" />
+    </LinearLayout>
+        <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+            <Button
+        android:id="@+id/cache_net_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ON_NET_ERROR" />
+                <Button
+        android:id="@+id/cache_b_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BEFORE_AND_AFTER_NET" />
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/result_trans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="对象转换" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+        <Button
+        android:id="@+id/to_json"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="转json" />
+               <Button
+        android:id="@+id/to_bean"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="转对象" />
+    </LinearLayout>
+</LinearLayout>
