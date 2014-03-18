@@ -11,6 +11,7 @@ import java.util.List;
 public class ApplicationUtil
 {
 	
+	
  /***
   *获取top的Activity的ComponentName
   * @param paramContext

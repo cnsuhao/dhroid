@@ -15,11 +15,17 @@ import net.duohuo.dhroid.ioc.annotation.InjectResource;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.util.ViewUtil;
 import net.duohuo.dhroiddemos.R;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 /**
@@ -31,23 +37,33 @@ public class IocTestActivity extends BaseActivity{
 	//获取assert中的文本
 	@InjectAssert(path="testtext.json")
 	String testassert;
+	//获取assert中的json
 	@InjectAssert(path="testtext.json")
 	JSONObject jo;
 	
+	//注入文件,因为注入文件时是在新线程里,所以建议在之前的页面就注入一次,不然文件大了会在使用时还没拷贝完成
+	@InjectAssert(path="ivory.apk")
+	File apkFile;
 	//注入视图
 	@InjectView(id=R.id.asserttext)
 	TextView testassertV;
 	@InjectView(id=R.id.resstring)
 	TextView resstrV;
-	//注入文件,建议在之前的页面就注入一次,不然文件大了会在使用时还没拷贝完成
-	@InjectAssert(path="ivory.apk")
-	File apkFile;
+
 	//注入视图,和视图事件//itemClick和itemLongClick时间可以参照
 	//注入时建议向下兼容,如果你的layout中是一个button且不需要换文字,请注入View,这样可以在将布局修改为image时前台不会出错
 	@InjectView(id=R.id.assertFile,click="toInstal")
 	View instalApkV;
+	@InjectView(id=R.id.child_layout)
+	ViewGroup childLayoutV;
+	//注入布局文件
+	@InjectView(layout=R.layout.ioc_head)
+	View headV;
+	//在其他视图中查看
+	@InjectView(id=R.id.intext,inView="headV")
+	TextView childTextV;
 	
-
+	
 	//注入字串
 	@InjectResource(string=R.string.app_name)
 	String appname;
@@ -74,23 +90,28 @@ public class IocTestActivity extends BaseActivity{
 	JSONObject extrajo;
 	
 	
-	//标准注入 单例  注入接口 application
+	//标准注入 单例  注入接口 需要在application中配置
 	@Inject
 	IDialog dialoger;
 	
 	//标准注入 单例  注入类
 	@Inject
 	DhDB db;
+	
 	//根据tag拿对象这里拿到的manager1和manager1copy是同一对象,manager2和manager2copy是同一对象
 	@Inject(tag="manager1")
 	TestManager manager1;
 	@Inject(tag="manager1")
 	TestManager manager1copy;
-	
 	@Inject(tag="manager2")
 	TestManager manager2;
 	@Inject(tag="manager2")
 	TestManager manager2copy;
+	
+	
+	//这个测试根据名字获取对象配置请看application
+	@Inject(name="testmm")//这里获取到的对象是TestManagerMM
+	TestManager managermm;
 	
 	
 	@Override
@@ -98,6 +119,10 @@ public class IocTestActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		//在baseActivity 中 调用了	InjectUtil.inject(this); 来注入注解在任意任意类中都可调用
 		setContentView(R.layout.ioc_test_activity);
+		LayoutParams params=new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		childLayoutV.addView(headV,params);
+		childTextV.setText("我在注入的布局里");
+
 		testassertV.setText("assert text: "+testassert+"assert jo:"+jo);
 		resstrV.setTextColor(colorLink);
 		resstrV.setText(appname+"  textsize:"+dime);
@@ -112,7 +137,21 @@ public class IocTestActivity extends BaseActivity{
 		//通过接口 获取单例这个需要在
 		IDialog d=IocContainer.getShare().get(IDialog.class);
 		d.showToastShort(this, testmanager.getName());
-		
+		findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+//				也可以根据编码获取
+//				IocContainer.getShare().get("testmm");
+				dialoger.showToastShort(IocTestActivity.this, managermm.getName());
+			}
+		});
+		findViewById(R.id.button2).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				TestDateHelper helper=IocContainer.getShare().get(TestDateHelper.class);
+				dialoger.showToastShort(IocTestActivity.this, helper.getName());
+			}
+		});
 	
 	}	
 	/**

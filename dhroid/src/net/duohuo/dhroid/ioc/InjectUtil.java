@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
+import net.duohuo.dhroid.Const;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectAssert;
 import net.duohuo.dhroid.ioc.annotation.InjectExtra;
@@ -48,8 +52,9 @@ public class InjectUtil {
 	 * @param layoutResId
 	 */
 	public static void inject(Object obj) {
-
-		Field[] fields = obj.getClass().getDeclaredFields();
+		if(obj==null)return;
+		//本类中的所有属性
+		Field[] fields =getDeclaredFields(obj.getClass());
 		if (fields != null && fields.length > 0) {
 			for (Field field : fields) {
 				field.setAccessible(true);
@@ -463,5 +468,38 @@ public class InjectUtil {
 			e.printStackTrace();
 		}
 	}
+	private static Field[] getDeclaredFields(Class<?> clazz) {
+		List<Field> result = new ArrayList<Field>();
+		for (; isCommonClazz(clazz); clazz = clazz.getSuperclass()) {
+			try {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Field field : fields) {
+					if(Modifier.isFinal(field.getModifiers())) {
+						continue;
+					}
+					if(Modifier.isStatic(field.getModifiers())) {
+						continue;
+					}
+					if ("serialVersionUID".equals(field.getName())) {// ingore
+						continue;
+					}
+					result.add(field);
+				}
+			} catch (Exception e) {
+			}
+		}
+		return result.toArray(new Field[0]);
+	}
 
+	private static  boolean isCommonClazz(Class<?> clazz){
+		String pkg=clazz.getPackage().getName();
+		boolean isok=pkg.startsWith("net.duohuo.dhroid")||pkg.startsWith(IocContainer.getShare().getApplicationContext().getPackageName());
+		if(isok)return true;
+		if(Const.ioc_instal_pkg!=null){
+			for (int i = 0; i <Const.ioc_instal_pkg.length; i++) {
+				if(pkg.startsWith(Const.ioc_instal_pkg[i]))return true;
+			}
+		}
+		return false;
+	}
 }

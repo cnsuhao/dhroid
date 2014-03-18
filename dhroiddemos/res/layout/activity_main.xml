@@ -34,7 +34,7 @@
         android:id="@+id/perferencetest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="高级Perference测试demo" />
+        android:text="高级使用简单的Perference测试demo" />
   
   <Button
         android:id="@+id/othertest"

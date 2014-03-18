@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
 /**
- * 
+ *来自网络
  * 横向的listView
  *
  */

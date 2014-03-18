@@ -3,8 +3,11 @@ package net.duohuo.dhroid.ioc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import android.content.Context;
 
@@ -56,19 +59,40 @@ public class Instance {
 	//保存context时的对象
 	public Map<String,Object> objs;
 	
+	public static Stack<InjectFields> injected=new Stack<InjectFields>();
 	
 	public Object get(Context context) {
 		//获取单例
 		if (scope == InstanceScope.SCOPE_SINGLETON) {
 			if (obj == null) {
 				obj=bulidObj(context);
+				injectChild(obj);
 			}
+			//这里需要先保证自己可以在容器中拿到然后才能注入
+			
 			return obj;
 		//获取context类型的对象
 		}else if (scope == InstanceScope.SCOPE_PROTOTYPE) {
-			return bulidObj(context);
+			Object obj=bulidObj(context);
+			//这里需要先保证自己可以在容器中拿到然后才能注入
+			injectChild(obj);
+			return obj;
 		}
 		return null;
+	}
+	
+	private void injectChild(Object obj){
+		if(obj instanceof InjectFields){
+			InjectFields f=(InjectFields) obj;
+			injected.push(f);
+			InjectUtil.inject(obj);
+			if(injected.get(0)==f){
+				while (!injected.isEmpty()) {
+					InjectFields popCall=injected.pop();
+					popCall.injected();
+				}	
+			}
+		}
 	}
 	
 	
@@ -86,6 +110,8 @@ public class Instance {
 		if(obj==null){
 			obj=bulidObj(context);
 			objs.put(tag, obj);
+			//这里需要先保证自己可以在容器中拿到然后才能注入
+			injectChild(obj);
 		}
 		return obj;
 	}

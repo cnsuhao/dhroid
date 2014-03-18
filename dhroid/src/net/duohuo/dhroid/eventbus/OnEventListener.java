@@ -28,11 +28,11 @@ public class OnEventListener{
 	 * @return  是否继续事件
 	 */
 	public  Boolean doInBg(Event event){
-		return true;
+		return false;
 	};
 	
 	public Boolean doInUI(Event event){
-		return true;
+		return false;
 	};
 
 	

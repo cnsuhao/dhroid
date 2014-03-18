@@ -5,6 +5,8 @@ import java.util.List;
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.adapter.BeanAdapter;
 import net.duohuo.dhroid.db.DhDB;
+import net.duohuo.dhroid.dialog.DialogCallBack;
+import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.util.ViewUtil;
@@ -31,6 +33,8 @@ public class DbStudentListActivity extends BaseActivity{
 	@Inject
 	DhDB db;
 	BeanAdapter<Student> beanAdapter;
+	@Inject
+	IDialog dialoger;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,13 +74,26 @@ public class DbStudentListActivity extends BaseActivity{
 		beanAdapter.notifyDataSetChanged();
 	}
 	/**
-	 * 
+	 *删除操作 
 	 * @param parent
 	 * @param view
 	 * @param position
 	 * @param id
 	 */
-	public void toDeleteStudent(AdapterView<?> parent, View view, int position, long id) {
+	public void toDeleteStudent(AdapterView<?> parent, View view, final int position, long id) {
+		//这边需要减去headView 的数量headview的数量请勿写固定值防止变化
+		dialoger.showDialog(this, "提示", "你确定删除这条信息吗", new DialogCallBack() {
+			@Override
+			public void onClick(int what) {
+				if(what==IDialog.YES){
+					Student student=beanAdapter.getTItem(position-listView.getHeaderViewsCount());
+					db.delete(student);
+					beanAdapter.remove(position-listView.getHeaderViewsCount());
+				}else{
+					dialoger.showToastShort(DbStudentListActivity.this, "你取消了");
+				}
+			}
+		});
 		
 	}
 	

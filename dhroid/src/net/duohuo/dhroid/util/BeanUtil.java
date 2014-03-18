@@ -2,38 +2,56 @@ package net.duohuo.dhroid.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 
 public class BeanUtil {
 	
 	/**
-	 * 对象fu
+	 * 对象copy只拷贝public的属性
 	 * @param from
 	 * @param to
 	 */
 	public static void copyBeanWithOutNull(Object from,Object to){
 		Class<?> beanClass = from.getClass();
 		Method[] methodList = beanClass.getDeclaredMethods();
-		for (int i = 0; i < methodList.length; i++) {
-			Method method=methodList[i];
-			if(method.toString().startsWith("public")){
-				if(method.getName().startsWith("get")||method.getName().startsWith("is")){
-					String name=method.getName().substring(3);
-					if(method.getName().startsWith("is")){
-						name=method.getName().substring(2);
-					}
-					try {
-						Object value=method.invoke(from);
-						if(value!=null){
-							String methodName="set"+name;							
-							Method setMethod = beanClass.getDeclaredMethod(methodName,method.getReturnType());
-							setMethod.invoke(to, value);
-						}												
-					} catch (Exception e) {
-						e.printStackTrace();
-					} 
+		Field[] fields=	beanClass.getFields();
+		for (int i = 0; i < fields.length; i++) {
+			Field field=fields[i];
+			field.setAccessible(true);
+			try {
+				Object value=field.get(from);
+				if(value!=null){
+					field.set(to, value);
 				}
-			}
+			} catch (Exception e) {
+			} 
 		}
+//		for (int i = 0; i < methodList.length; i++) {
+//			Method method=methodList[i];
+//			if(method.toString().startsWith("public")){
+//				if(method.getName().startsWith("get")||method.getName().startsWith("is")){
+//					String name=method.getName().substring(3);
+//					if(method.getName().startsWith("is")){
+//						name=method.getName().substring(2);
+//					}
+//					try {
+//						Object value=method.invoke(from);
+//						if(value!=null){
+//							String methodName="set"+name;							
+//							Method setMethod = beanClass.getDeclaredMethod(methodName,method.getReturnType());
+//							setMethod.invoke(to, value);
+//						}												
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					} 
+//				}
+//			}
+//		}
+		
+		
+		
+		
+		
 	}
 	
 	public static Field getDeclaredField(Class clazz,String name){

@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "data": {
+    "title": "你好",
+    "isok": 1,
+    "isgood": true,
+    "pubtime": "1212121212",
+    "user": {
+      "name": "tengzhinei",
+      "age": "12"
+    },
+    "attrs": [
+      {
+        "name": "name1"
+      },
+      {
+        " name": "name2"
+      }
+    ]
+  }
+}

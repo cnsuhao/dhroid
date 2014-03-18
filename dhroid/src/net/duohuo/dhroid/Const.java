@@ -20,6 +20,8 @@ public class Const {
 	public static String netadapter_json_timeline="id";
 	public static String netadapter_no_more="已经没有了";
 	
+	public static String[] ioc_instal_pkg=null;
+	
 	//图片缓存相关
 	public static String image_cache_dir="dhcache";
 	public static int image_cache_num=12;

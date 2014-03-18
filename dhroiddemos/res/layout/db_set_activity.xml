@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
 		android:textColor="@color/grey_dark"
 		android:hint="年龄"
+				android:inputType="number"
         android:ems="10" >
     </EditText>
     <EditText
@@ -47,6 +48,7 @@
         android:layout_width="match_parent"
 		android:textColor="@color/grey_dark"
 		android:hint="性别(1男,2女)"
+				android:inputType="number"
         android:ems="10" >
     </EditText>
         <EditText
@@ -58,6 +60,7 @@
         android:layout_width="match_parent"
 		android:textColor="@color/grey_dark"
 		android:hint="党员身份(1是,0否)"
+				android:inputType="number"
         android:ems="10" >
     </EditText>
 

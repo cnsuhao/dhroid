@@ -1,5 +1,6 @@
 package net.duohuo.dhroiddemos.net;
 
+import java.io.File;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.annotation.Inject;
+import net.duohuo.dhroid.ioc.annotation.InjectAssert;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.net.DhNet;
 import net.duohuo.dhroid.net.NetTask;
@@ -42,6 +44,8 @@ public class NetTestActivity extends BaseActivity{
 	View beanTransV;
 	@InjectView(id=R.id.to_bean,click="onTrans")
 	View JSONTranV;
+	@InjectView(id=R.id.upload,click="onUpload")
+	View upload;
 	
 	
 	@InjectView(id=R.id.result)
@@ -50,7 +54,9 @@ public class NetTestActivity extends BaseActivity{
 	IDialog dialoger;
 	JSONObject jodate;
 	
-	
+	//注入文件,因为注入文件时是在新线程里,所以建议在之前的页面就注入一次,不然文件大了会在使用时还没拷贝完成
+	@InjectAssert(path="ivory.apk")
+	File apkFile;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +238,32 @@ public class NetTestActivity extends BaseActivity{
 				}
 			}
 		});
+	}
+	
+	/**
+	 * 
+	 */
+	public void onUpload() {
+		DhNet net=new DhNet("http://www.duohuo.net");
+		net.addParam("key1", "参数1")
+		.addParam("key2", "参数1").upload("fileName", apkFile, new NetTask(this) {
+			@Override
+			public void doInUI(Response response, Integer transfer) {
+				if (response.isSuccess()) {
+					Boolean uploading = response.getBundle("uploading");
+					if (!uploading) {
+						//上传完成
+					}else{
+						//已上传大小
+						long length= response.getBundle("length");
+						//文件总大小
+						long total=  response.getBundle("total");
+					}
+				}
+			}
+		});
+		
+		
 	}
 	
 	
