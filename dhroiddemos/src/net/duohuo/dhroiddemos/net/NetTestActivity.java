@@ -73,6 +73,8 @@ public class NetTestActivity extends BaseActivity{
 	 */
 	public void onTestGet(View v) {
 		DhNet net=new DhNet("http://youxianpei.c.myduohuo.com/mobile_index_adbjsonview?id=63");
+		//添加参数
+		net.addParam("key1", "key1");
 		net.doGet(new NetTask(this) {
 			@Override
 			public void onErray(Response response) {

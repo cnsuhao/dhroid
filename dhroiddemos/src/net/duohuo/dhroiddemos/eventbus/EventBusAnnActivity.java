@@ -66,11 +66,13 @@ public class EventBusAnnActivity extends BaseActivity{
 	
 	}
 	
-	//在后台监听线程监听事件1
+	//
 	@OnEvent(name=Events.event_test2)
 	public void onEvent2(String p1,String p2){
 		dialoger.showToastShort(this, "事件2触发参数1:"+p1+"参数2:"+p2 );
 	}
+	
+	
 	/**
 	 * 
 	 */

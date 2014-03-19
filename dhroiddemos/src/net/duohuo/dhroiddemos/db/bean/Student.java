@@ -6,6 +6,7 @@ import net.duohuo.dhroid.db.ann.Column;
 import net.duohuo.dhroid.db.ann.NoColumn;
 
 public class Student {
+	
 	@Column(pk=true)
 	public Long id;
 	public String name;

@@ -34,6 +34,8 @@ public class ListTestActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.adapter_list_activity);
 		adapter=new NetJSONAdapter("http://shishangquan.017788.com/mobile_ordermeal_jujiList", this, R.layout.adapter_item);
+		//添加参数
+		adapter.addparam("key1", "key1");
 		//数据绑定
 		adapter.addField("username", R.id.name);
 		adapter.addField("title", R.id.title);
