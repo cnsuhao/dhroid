@@ -1,8 +1,12 @@
 package net.duohuo.dhroiddemos.net;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,6 +19,7 @@ import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectAssert;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.net.DhNet;
+import net.duohuo.dhroid.net.HttpManager;
 import net.duohuo.dhroid.net.NetTask;
 import net.duohuo.dhroid.net.Response;
 import net.duohuo.dhroid.net.cache.CachePolicy;
@@ -111,6 +116,8 @@ public class NetTestActivity extends BaseActivity{
 			@Override
 			public void doInUI(Response response, Integer transfer) {
 					resultV.setText(response.plain());
+					
+				
 			}
 		});
 	}
@@ -212,34 +219,56 @@ public class NetTestActivity extends BaseActivity{
 	
 	
 	public void onTrans(final View v) {
-		DhNet net=new DhNet();
-		net.setUrl("http://youxianpei.c.myduohuo.com/mobile_index_adbjsonview?id=63&temp=trans");
-		net.doGet(new NetTask(getActivity()) {
+		new Thread(new Runnable() {
 			@Override
-			public void doInUI(Response response, Integer transfer) {
-				//结果转JOSN
-				if(v.getId()==R.id.to_json){
-				JSONArray array=response.jSONArrayFromData();
-				resultV.setText(array.toString());
-				//获取某个节点下的json
-//				JSONObject urlinfo=response.jSONFrom("xxx.xxx");
-//				dialoger.showToastLong(getActivity(), urlinfo.toString());
-				//这是结果的纯文本
-//				response.plain();
-				//获取某个节点下的jsonarray
-//				response.jSONArrayFrom("xxx.xxx");
-				//将整个节点转为json对象
-//				response.jSON();
-				}else if(v.getId()==R.id.to_bean){
-					//
-				List<AdBean> ads=response.listFrom(AdBean.class, "data");
-				resultV.setText(ads.toString());
-				//获取某个节点下的对象
-//				AdBean bean=response.modelFrom("xxx.xxx");
-//				dialoger.showToastLong(getActivity(), bean.toString());
-				}
+			public void run() {
+				  HttpGet httpGet = new HttpGet("http://down.apk.hiapk.com/Download?aid=2428843&module=256&info=YYxZcth%2B&rel=nofollow");
+				    try {
+				    	httpGet.addHeader("Referer", "http://apk.hiapk.com/search?keyword=%u8C61%u7259%u7ED8&type=0");
+						HttpResponse   response = HttpManager.execute(httpGet);
+						Header[] headers=response.getAllHeaders();
+						for (int i = 0; i < headers.length; i++) {
+							System.out.println(headers[i]);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			}
-		});
+		}).start();
+	  
+		
+        
+		
+//		DhNet net=new DhNet();
+//		net.setUrl("http://down.apk.hiapk.com/Download?aid=2428843&module=256&info=YYxZcth%2B&rel=nofollow");
+//		
+//		net.setUrl("http://youxianpei.c.myduohuo.com/mobile_index_adbjsonview?id=63&temp=trans");
+//		net.doGet(new NetTask(getActivity()) {
+//			@Override
+//			public void doInUI(Response response, Integer transfer) {
+//				//结果转JOSN
+//				if(v.getId()==R.id.to_json){
+//				JSONArray array=response.jSONArrayFromData();
+//				resultV.setText(array.toString());
+//				//获取某个节点下的json
+////				JSONObject urlinfo=response.jSONFrom("xxx.xxx");
+////				dialoger.showToastLong(getActivity(), urlinfo.toString());
+//				//这是结果的纯文本
+////				response.plain();
+//				//获取某个节点下的jsonarray
+////				response.jSONArrayFrom("xxx.xxx");
+//				//将整个节点转为json对象
+////				response.jSON();
+//				}else if(v.getId()==R.id.to_bean){
+//					//
+//				List<AdBean> ads=response.listFrom(AdBean.class, "data");
+//				resultV.setText(ads.toString());
+//				//获取某个节点下的对象
+////				AdBean bean=response.modelFrom("xxx.xxx");
+////				dialoger.showToastLong(getActivity(), bean.toString());
+//				}
+//			}
+//		});
 	}
 	
 	/**
@@ -264,8 +293,6 @@ public class NetTestActivity extends BaseActivity{
 				}
 			}
 		});
-		
-		
 	}
 	
 	

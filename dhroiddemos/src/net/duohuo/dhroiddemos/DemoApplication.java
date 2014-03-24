@@ -22,7 +22,7 @@ public class DemoApplication extends Application{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
+		//一些常量的配置
 		Const.netadapter_page_no = "p";
 		Const.netadapter_step = "step";
 		Const.response_total = "totalRows";
@@ -32,6 +32,8 @@ public class DemoApplication extends Application{
 		Const.DATABASE_VERSION = 20;
 		Const.net_pool_size=30;
 		Const.net_error_try=true;
+		
+		
 		
 		//IOC的初始化
 		IocContainer.getShare().initApplication(this);

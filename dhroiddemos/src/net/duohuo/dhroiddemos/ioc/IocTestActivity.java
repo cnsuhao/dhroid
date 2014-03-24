@@ -18,6 +18,8 @@ import net.duohuo.dhroiddemos.R;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -42,7 +44,7 @@ public class IocTestActivity extends BaseActivity{
 	JSONObject jo;
 	
 	//注入文件,因为注入文件时是在新线程里,所以建议在之前的页面就注入一次,不然文件大了会在使用时还没拷贝完成
-	@InjectAssert(path="ivory.apk")
+	@InjectAssert(path="anzhi.apk")
 	File apkFile;
 	//注入视图
 	@InjectView(id=R.id.asserttext)
@@ -118,6 +120,10 @@ public class IocTestActivity extends BaseActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//在baseActivity 中 调用了	InjectUtil.inject(this); 来注入注解在任意任意类中都可调用
+		
+		 Bitmap output = Bitmap.createBitmap(1000, 1000, Config.ARGB_8888);
+		 
+		 
 		setContentView(R.layout.ioc_test_activity);
 		LayoutParams params=new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 		childLayoutV.addView(headV,params);
