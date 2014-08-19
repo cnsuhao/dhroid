@@ -17,6 +17,8 @@ import net.duohuo.dhroiddemos.ioc.TestManager;
 import net.duohuo.dhroiddemos.net.NetTestActivity;
 import net.duohuo.dhroiddemos.other.OtherMain;
 import net.duohuo.dhroiddemos.perference.PerferenceTestActivity;
+import net.duohuo.dhroiddemos.util.IUtil;
+import net.duohuo.dhroidtest.TestActivity;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -26,6 +28,8 @@ import android.view.View;
 public class MainActivity extends BaseActivity {
 	@InjectView(id=R.id.ioctest,click="toTest")
 	View toIocTest;
+	@InjectView(id=R.id.ioctest2,click="toTest")
+	View toIocTest2;
 	@InjectView(id=R.id.dbtest,click="toTest")
 	View toDbTest;
 	@InjectView(id=R.id.nettest,click="toTest")
@@ -46,6 +50,7 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		IUtil.init(this);
 		setContentView(R.layout.activity_main);
 		
 		
@@ -63,6 +68,10 @@ public class MainActivity extends BaseActivity {
 			JSONObject jo=new JSONObject();
 			JSONUtil.put(jo, "name", "tengzhinei");
 			it.putExtra("jo", jo.toString());
+			break;
+		case R.id.ioctest2:
+			it.setClass(this, TestActivity.class);
+			//传递数据
 			break;
 		case R.id.dbtest:
 			it.setClass(this, DbStudentListActivity.class);

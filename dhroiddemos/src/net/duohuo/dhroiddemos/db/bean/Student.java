@@ -3,12 +3,13 @@ package net.duohuo.dhroiddemos.db.bean;
 import java.util.Date;
 
 import net.duohuo.dhroid.db.ann.Column;
+import net.duohuo.dhroid.db.ann.Entity;
 import net.duohuo.dhroid.db.ann.NoColumn;
-
+@Entity(table="student")
 public class Student {
 	
 	@Column(pk=true)
-	public Long id;
+	public long id;
 	public String name;
 	@Column(name="num_no")
 	public String num;
@@ -22,11 +23,11 @@ public class Student {
 	public String temp;
 	
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

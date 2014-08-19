@@ -2,8 +2,6 @@ package net.duohuo.dhroiddemos.ioc;
 
 import java.io.File;
 
-import org.json.JSONObject;
-
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.db.DhDB;
 import net.duohuo.dhroid.dialog.IDialog;
@@ -15,18 +13,18 @@ import net.duohuo.dhroid.ioc.annotation.InjectResource;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.util.ViewUtil;
 import net.duohuo.dhroiddemos.R;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
+
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
@@ -61,11 +59,9 @@ public class IocTestActivity extends BaseActivity{
 	//注入布局文件
 	@InjectView(layout=R.layout.ioc_head)
 	View headV;
-	//在其他视图中查看
+	//在其他视图中查找,查找时是根据别名查找的
 	@InjectView(id=R.id.intext,inView="headV")
 	TextView childTextV;
-	
-	
 	//注入字串
 	@InjectResource(string=R.string.app_name)
 	String appname;
@@ -78,7 +74,7 @@ public class IocTestActivity extends BaseActivity{
 	Drawable icDraw;
 	//注入dimen
 	@InjectResource(dimen=R.dimen.testdimen)
-	Float dime;
+	Integer dime;
 	
 	
 	//接受传入的字符串

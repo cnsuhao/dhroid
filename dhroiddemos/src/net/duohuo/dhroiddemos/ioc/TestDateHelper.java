@@ -3,10 +3,10 @@ package net.duohuo.dhroiddemos.ioc;
 import net.duohuo.dhroid.db.DhDB;
 import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.Instance.InstanceScope;
+import net.duohuo.dhroid.ioc.annotation.FieldsInjectable;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import android.content.Context;
 import android.util.Log;
-import net.duohuo.dhroid.ioc.InjectFields;
 import net.duohuo.dhroid.ioc.IocContainer;
 /**
  * 这个类的构造函数需要Context IOC容器默认会将application的context传入<br/>
@@ -14,7 +14,7 @@ import net.duohuo.dhroid.ioc.IocContainer;
  * 同时测试类的相互依赖问题,依赖于其他可以实现InjectFields接口
  * @author duohuo-jinghao
  */
-public class TestDateHelper implements InjectFields{
+public class TestDateHelper implements FieldsInjectable{
 
 	public static int count=0;
 	

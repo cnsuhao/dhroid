@@ -4,6 +4,7 @@
 package net.duohuo.dhroiddemos.adapter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -21,6 +22,7 @@ import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.net.JSONUtil;
 import net.duohuo.dhroid.net.Response;
+import net.duohuo.dhroiddemos.DemoValueFixer;
 import net.duohuo.dhroiddemos.R;
 
 /**
@@ -47,12 +49,19 @@ public class ListRefreshActivity extends BaseActivity{
 		//这个方法没有具体实现,要要在自己实现的listview中处理
 		adapter.setJump(DetailActivity.class, "id", "uid");
 		//这里可以进行覆盖DataBulider   需要返回有效的JSONArray
-		adapter.setDataBulider(new DataBulider() {
-			@Override
-			public JSONArray onDate(Response response) {
-				return response.jSONArrayFromData();
-			}
-		});
+//		adapter.setDataBulider(new DataBulider() {
+//			@Override
+//			public JSONArray onDate(Response response) {
+//				try {
+//				JSONArray array= response.jSONArray();
+//					JSONArray data=array.getJSONArray(2);
+//					return data;
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//				return null;
+//			}
+//		});
 		
 		
 		
@@ -67,9 +76,9 @@ public class ListRefreshActivity extends BaseActivity{
 		adapter.addField("username", R.id.name);
 		adapter.addField("title", R.id.title);
 		//数据绑定 进行文本修饰
-		adapter.addField("pubdate", R.id.time,"time");
+		adapter.addField("pubdate", R.id.time,DemoValueFixer.time);
 		//数据绑定 进行图片修饰
-		adapter.addField("user_faceimg", R.id.pic,"round");
+		adapter.addField("user_faceimg", R.id.pic,DemoValueFixer.pic_round);
 		
 		adapter.addField(new FieldMap("activeaddress", R.id.content) {
 			@Override

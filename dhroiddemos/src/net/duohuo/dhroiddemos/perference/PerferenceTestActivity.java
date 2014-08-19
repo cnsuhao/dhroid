@@ -3,11 +3,13 @@
  */
 package net.duohuo.dhroiddemos.perference;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.dialog.IDialog;
+import net.duohuo.dhroid.ioc.IocContainer;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.util.ViewUtil;
@@ -34,8 +36,12 @@ public class PerferenceTestActivity extends BaseActivity{
 	View refreshV;
 	@InjectView(id=R.id.commit,click="onCommit")
 	View commitV;
+	@InjectView(id=R.id.reset,click="onReset")
+	View resetV;
 	@Inject
 	DemoPerference demoPerference;
+	
+	
 	IDialog dialoger;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,8 @@ public class PerferenceTestActivity extends BaseActivity{
 		//首次加载这个
 		demoPerference.load();
 		bindDate();
+		
+	
 	}
 	
 	/**
@@ -75,6 +83,13 @@ public class PerferenceTestActivity extends BaseActivity{
 	public void onRefresh() {
 		//这里是模拟的用的同步
 		demoPerference.refresh();
+		bindDate();
+	}
+	/**
+	 * 更新
+	 */
+	public void onReset(){
+		demoPerference.reset();
 		bindDate();
 	}
 	/**

@@ -15,63 +15,61 @@ import net.duohuo.dhroid.util.ViewUtil;
 import net.duohuo.dhroiddemos.R;
 import net.duohuo.dhroiddemos.db.bean.Student;
 
-public class DbStudentSetActivity extends BaseActivity{
-	@InjectView(id=R.id.name)
+public class DbStudentSetActivity extends BaseActivity {
+	@InjectView(id = R.id.name)
 	EditText nameV;
-	@InjectView(id=R.id.num)
+	@InjectView(id = R.id.num)
 	EditText numV;
-	@InjectView(id=R.id.sex)
+	@InjectView(id = R.id.sex)
 	EditText sexV;
-	@InjectView(id=R.id.dangyuan)
+	@InjectView(id = R.id.dangyuan)
 	EditText dangyuanV;
-	@InjectView(id=R.id.age)
+	@InjectView(id = R.id.age)
 	EditText ageV;
-	@InjectView(id=R.id.create_time)
+	@InjectView(id = R.id.create_time)
 	TextView createTimeV;
-	@InjectView(id=R.id.save,click="onSave")
+	@InjectView(id = R.id.save, click = "onSave")
 	View saveV;
 	@Inject
 	DhDB db;
-	@InjectExtra(name="id")
+	@InjectExtra(name = "id")
 	Long id;
 	Student student;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.db_set_activity);
-		if(id!=null&&id!=0){
-			student=db.load(Student.class, id);
+		if (id != null && id != 0) {
+			student = db.load(Student.class, id);
 			ViewUtil.bindView(nameV, student.getName());
 			ViewUtil.bindView(numV, student.getNum());
 			ViewUtil.bindView(sexV, student.getSex());
-			ViewUtil.bindView(dangyuanV, student.isDangyuang()?"1":"0");
+			ViewUtil.bindView(dangyuanV, student.isDangyuang() ? "1" : "0");
 			ViewUtil.bindView(ageV, student.getAge());
-			ViewUtil.bindView(createTimeV, student.getCreateTime(),"toTime");
-		
+			ViewUtil.bindView(createTimeV, student.getCreateTime(), "toTime");
+
 		}
 	}
-	
+
 	/**
 	 * 保存
+	 * 
 	 * @param v
 	 */
 	public void onSave(View v) {
-		boolean isnew=false;
-		if(student == null){
-			student=new Student();
-			isnew=true;
+		if (student == null) {
+			student = new Student();
 		}
 		student.setName(nameV.getText().toString());
 		student.setNum(numV.getText().toString());
 		student.setSex(Integer.parseInt(sexV.getText().toString()));
 		student.setAge(Integer.parseInt(ageV.getText().toString()));
-		student.setDangyuang(dangyuanV.getText().toString().equals("1")?true:false);
+		student.setDangyuang(dangyuanV.getText().toString().equals("1") ? true
+				: false);
 		student.setCreateTime(new Date());
-		if(isnew){
-			db.save(student);
-		}else{
-			db.update(student);
-		}
+		//保存和更新使用同一方法,原update方法保留
+		db.save(student);
 		finish();
 	}
 }

@@ -1,5 +1,8 @@
 package net.duohuo.dhroiddemos.adapter;
 
+import java.util.Date;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -11,11 +14,14 @@ import net.duohuo.dhroid.adapter.BeanAdapter;
 import net.duohuo.dhroid.adapter.FieldMap;
 import net.duohuo.dhroid.adapter.INetAdapter.LoadSuccessCallBack;
 import net.duohuo.dhroid.adapter.NetJSONAdapter;
+import net.duohuo.dhroid.adapter.NetJSONAdapter.DataBulider;
 import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroid.net.JSONUtil;
 import net.duohuo.dhroid.net.Response;
+import net.duohuo.dhroid.net.cache.CachePolicy;
+import net.duohuo.dhroiddemos.DemoValueFixer;
 import net.duohuo.dhroiddemos.R;
 
 public class ListTestActivity extends BaseActivity{
@@ -34,15 +40,23 @@ public class ListTestActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.adapter_list_activity);
 		adapter=new NetJSONAdapter("http://shishangquan.017788.com/mobile_ordermeal_jujiList", this, R.layout.adapter_item);
+//		adapter.setDataBulider(new DataBulider() {
+//			@Override
+//			public JSONArray onDate(Response response) {
+//				//如果你的结果不是在某个节点而是需要处理后才有的
+//				return response.jSONArrayFrom("xxx");
+//			}
+//		});
+		
 		//添加参数
-		adapter.addparam("key1", "key1");
+		adapter.addParam("key1", "key1");
 		//数据绑定
 		adapter.addField("username", R.id.name);
 		adapter.addField("title", R.id.title);
 		//数据绑定 进行文本修饰
-		adapter.addField("pubdate", R.id.time,"time");
+		adapter.addField("pubdate", R.id.time,DemoValueFixer.time);
 		//数据绑定 进行图片修饰
-		adapter.addField("user_faceimg", R.id.pic,"round");
+		adapter.addField("user_faceimg", R.id.pic,DemoValueFixer.pic_round);
 		
 		adapter.addField(new FieldMap("activeaddress", R.id.content) {
 			@Override
@@ -79,6 +93,8 @@ public class ListTestActivity extends BaseActivity{
 		});
 		
 		adapter.refresh();
+		
+		adapter.useCache(CachePolicy.POLICY_CACHE_AndRefresh);
 		adapter.showProgressOnFrist(true);
 		listV.setAdapter(adapter);
 		

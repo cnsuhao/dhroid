@@ -30,6 +30,10 @@ public class DbStudentListActivity extends BaseActivity{
 	View searchV;
 	@InjectView(id=R.id.to_create,click="toCreate")
 	View toCreateV;
+	@InjectView(id=R.id.to_del_all,click="onDelAll")
+	View toDelAllV;
+	@InjectView(id=R.id.to_del_by_search,click="onDelBySearch")
+	View toDelBySearchV;
 	@Inject
 	DhDB db;
 	BeanAdapter<Student> beanAdapter;
@@ -42,9 +46,11 @@ public class DbStudentListActivity extends BaseActivity{
 		beanAdapter=new BeanAdapter<Student>(this,R.layout.db_item_for_list) {
 			@Override
 			public void bindView(View itemV, int position, Student jo) {
-				ViewUtil.bindView(itemV.findViewById(R.id.name), jo.getName());
-				ViewUtil.bindView(itemV.findViewById(R.id.num), "学号:"+jo.getNum());
-				ViewUtil.bindView(itemV.findViewById(R.id.sex), jo.getSex(),"sex");
+				//这里顺带下ViewHolder的使用
+				ViewHolder holder=ViewHolder.getHolder(itemV);
+				ViewUtil.bindView(holder.getView(R.id.name), jo.getName());
+				ViewUtil.bindView(holder.getView(R.id.num), "学号:"+jo.getNum());
+				ViewUtil.bindView(holder.getView(R.id.sex), jo.getSex(),"sex");
 			}
 		};
 	
@@ -96,6 +102,23 @@ public class DbStudentListActivity extends BaseActivity{
 		});
 		
 	}
+	
+	public void onDelAll(){
+		db.deleteAll(Student.class);
+		String key=	"%"+contentV.getText().toString().trim()+"%";
+		List<Student> list=db.queryList(Student.class, ":name like ? or :num like ?", key,key);
+		beanAdapter.clear();
+		beanAdapter.addAll(list);
+		beanAdapter.notifyDataSetChanged();
+	}
+	public void onDelBySearch(){
+		String key=	"%"+contentV.getText().toString().trim()+"%";
+		db.delete(Student.class, ":name like ? or :num like ?", key,key);
+		beanAdapter.clear();
+		beanAdapter.notifyDataSetChanged();
+	}
+	
+	
 	
 	@Override
 	protected void onResume() {

@@ -1,10 +1,10 @@
 package net.duohuo.dhroiddemos.ioc;
 
 import android.util.Log;
-import net.duohuo.dhroid.ioc.InjectFields;
+import net.duohuo.dhroid.ioc.annotation.FieldsInjectable;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 
-public class TestManager  implements InjectFields{
+public class TestManager  implements FieldsInjectable{
 	String name;
 
 	@Inject

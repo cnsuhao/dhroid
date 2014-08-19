@@ -1,11 +1,13 @@
 package net.duohuo.dhroiddemos;
 
 import net.duohuo.dhroid.Const;
+import net.duohuo.dhroid.Dhroid;
 import net.duohuo.dhroid.adapter.ValueFix;
 import net.duohuo.dhroid.db.DhDB;
 import net.duohuo.dhroid.dialog.DialogImpl;
 import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.Instance.PerpareAction;
+import net.duohuo.dhroid.ioc.Ioc;
 import net.duohuo.dhroid.ioc.IocContainer;
 import net.duohuo.dhroid.ioc.Instance.InstanceScope;
 import net.duohuo.dhroiddemos.ioc.TestDateHelper;
@@ -25,7 +27,6 @@ public class DemoApplication extends Application{
 		//一些常量的配置
 		Const.netadapter_page_no = "p";
 		Const.netadapter_step = "step";
-		Const.response_total = "totalRows";
 		Const.response_data = "data";
 		Const.netadapter_step_default = 7;
 		Const.netadapter_json_timeline="pubdate";
@@ -33,20 +34,24 @@ public class DemoApplication extends Application{
 		Const.net_pool_size=30;
 		Const.net_error_try=true;
 		
-		
-		
-		//IOC的初始化
-		IocContainer.getShare().initApplication(this);
-		//IOC配置下面两个是必须配置的
-		//配置对话框对象,这是接口配置写法
-		//项目中可以自己写对话框对象,然后在这进行配置,这里使用的是提供的默认配置
-		IocContainer.getShare().bind(DialogImpl.class).to(IDialog.class)
+		Dhroid.init(this);
+		//项目中可以自己写对话框对象,然后在这进行配置,如果没配置将使用默认配置
+		Ioc.bind(MyDialogImpl.class).to(IDialog.class)
 		//这是单例
 		.scope(InstanceScope.SCOPE_SINGLETON);
-		//配置ValueFix对象基本每个项目都有自己的实现
-		IocContainer.getShare().bind(DemoValueFixer.class)
+		
+		//配置ValueFix接口的实现基本每个项目都有自己的实现ValueFix是值修饰的意思,主要用于adapter和ViewUtil使用
+		Ioc.bind(DemoValueFixer.class)
 		.to(ValueFix.class)
 		.scope(InstanceScope.SCOPE_SINGLETON);
+
+		
+		
+		//这个基本不需要,主要用于被注入的对象的属性也是注入时,可以注入的包
+		//String[] pcks={"net.duohuo.xxxx"};
+		//Const.ioc_instal_pkg=pcks;
+		
+		/*****下面是测试的对象相互依赖的注入问题与配置无关******/
 		
 		//这是使用名字配置的方法,这样可以通过名字获取对象,使用不多
 		IocContainer.getShare().bind(TestManagerMM.class)
@@ -66,28 +71,6 @@ public class DemoApplication extends Application{
 				helper.setName("我是在初始化是提供名字的");
 			}
 		});
-		//IOC中基本bind的类对象和to的类想象如果是同一个且是单例或通过Tag获取是不需要配置的
-		
-		
-		
-		
-		
-		
-		
-		
-		ImageLoaderConfiguration	 imageconfig = new ImageLoaderConfiguration.Builder(
-				getApplicationContext())
-				.threadPoolSize(3)
-				.threadPriority(Thread.NORM_PRIORITY - 2)
-				.memoryCacheSize(1500000)
-				.denyCacheImageMultipleSizesInMemory()
-				.discCacheFileNameGenerator(new Md5FileNameGenerator())
-				.build();
-		ImageLoader.getInstance().init(imageconfig);
-		//数据库初始化
-		DhDB db=IocContainer.getShare().get(DhDB.class);
-		db.init("dhdbname", Const.DATABASE_VERSION);
-		
 	}
 	
 }

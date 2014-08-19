@@ -17,15 +17,22 @@ import net.duohuo.dhroid.util.ImageUtil;
 
 public class DemoValueFixer implements ValueFix {
 
+	public static String time="time";
+	public static String sex="sex";
+	public static String pic_defalut="defalut";
+	public static String pic_round="round";
+	
+	
+	
+	
 	// 头像用圆角
 	public static DisplayImageOptions optionsHeadRound;
 	public static Map<String, DisplayImageOptions> imageOptions;
 
 	public DemoValueFixer() {
 		imageOptions = new HashMap<String, DisplayImageOptions>();
-		DisplayImageOptions	optionsDefault = new DisplayImageOptions.Builder()
-		.cacheInMemory()
-		.cacheOnDisc().build();
+		DisplayImageOptions optionsDefault = new DisplayImageOptions.Builder()
+				.cacheInMemory().cacheOnDisc().build();
 		imageOptions.put("default", optionsDefault);
 		optionsHeadRound = new DisplayImageOptions.Builder().cacheInMemory()
 				.showImageForEmptyUri(R.drawable.ic_launcher)
@@ -62,8 +69,10 @@ public class DemoValueFixer implements ValueFix {
 		}
 		return o;
 	}
+
 	/**
 	 * 时间转字符串
+	 * 
 	 * @param timestamp
 	 * @param pattern
 	 * @return
@@ -75,11 +84,12 @@ public class DemoValueFixer implements ValueFix {
 		sdf.format(date);
 		return sdf.format(date);
 	}
+
 	@Override
 	public DisplayImageOptions imageOptions(String type) {
-		DisplayImageOptions option=imageOptions.get(type);
-		if(option==null){
-			option=imageOptions.get("default");
+		DisplayImageOptions option = imageOptions.get(type);
+		if (option == null) {
+			option = imageOptions.get("default");
 		}
 		return option;
 	}
