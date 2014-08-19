@@ -47,88 +47,91 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-          <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name="net.duohuo.dhroidtest.TestActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name="net.duohuo.dhroiddemos.db.DbStudentListActivity"
             android:label="@string/app_name" >
-  
         </activity>
         <activity
             android:name="net.duohuo.dhroiddemos.db.DbStudentSetActivity"
             android:label="@string/app_name" >
         </activity>
-         <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.ioc.IocTestActivity"
             android:label="@string/app_name" >
         </activity>
-            <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.net.NetTestActivity"
             android:label="@string/app_name" >
         </activity>
-            <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.adapter.ListTestActivity"
             android:label="@string/app_name" >
         </activity>
-             <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.adapter.DetailActivity"
             android:label="@string/app_name" >
         </activity>
-        
-            
         <activity
             android:name="net.duohuo.dhroiddemos.adapter.AdapterTestMainActivity"
             android:label="@string/app_name" >
         </activity>
-           <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.adapter.ListRefreshActivity"
             android:label="@string/app_name" >
         </activity>
-            
         <activity
             android:name="net.duohuo.dhroiddemos.eventbus.EventBusOneActivity"
             android:label="@string/app_name" >
-         </activity>
+        </activity>
         <activity
             android:name="net.duohuo.dhroiddemos.eventbus.EventBusSecondActivity"
             android:label="@string/app_name" >
         </activity>
-            <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.eventbus.EventBusActivity"
             android:label="@string/app_name" >
         </activity>
-            <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.eventbus.EventBusAnnActivity"
             android:label="@string/app_name" >
         </activity>
-           <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.perference.PerferenceTestActivity"
             android:label="@string/app_name" >
         </activity>
-                  <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.other.OtherMain"
             android:label="@string/app_name" >
         </activity>
-                  <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.other.JSONSafeActivity"
             android:label="@string/app_name" >
         </activity>
-                      <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.other.ThreadTest"
             android:label="@string/app_name" >
         </activity>
-                           <activity
+        <activity
             android:name="net.duohuo.dhroiddemos.other.PicUploadActivity"
             android:label="@string/app_name" >
         </activity>
-        
-            
+        <activity
+            android:name="net.duohuo.dhroiddemos.adapter.test.ListTabActivity"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>
