@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="4月9日，据科技博客网站TechCrunch报道，过去两年来，被许多企业和服务用来加密数据的安全协议OpenSSL一直存在一个漏洞，黑客可以利用该漏洞从服务器内存中窃取64KB数据。 64KB数据量并不大，但黑客可以重复利用该漏洞，多次窃取数据，并可能因此获得用户的加密密钥，解密敏感数据。 更糟糕的是，即使修正了这一漏洞，" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/tab_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="回复（1）" />
+
+        <Button
+            android:id="@+id/tab_2"
+                    android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="转发（1000）" />
+    </LinearLayout>
+
+</LinearLayout>

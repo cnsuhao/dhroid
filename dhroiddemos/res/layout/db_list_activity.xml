@@ -28,13 +28,36 @@
             android:text="搜索" />
 
     </LinearLayout>
-<Button
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
             android:id="@+id/to_create"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
                android:textColor="@color/grey_dark"
             android:text="创建" />
+<Button
+            android:id="@+id/to_del_all"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+               android:textColor="@color/grey_dark"
+            android:text="清空" />
+
+<Button
+            android:id="@+id/to_del_by_search"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+               android:textColor="@color/grey_dark"
+            android:text="按搜索条件删除" />
+        
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listView"
         	        android:layout_width="match_parent"
