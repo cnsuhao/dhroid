@@ -55,6 +55,7 @@ import android.text.TextUtils;
 public class HttpManager {
 
 	private static final int DEFAULT_MAX_CONNECTIONS = 30;
+	
 	public  static final int DEFAULT_SOCKET_TIMEOUT = 30 * 1000;
 
 	public static final int DEFAULT_SOCKET_TIMEOUT_SHORT = 10 * 1000;
@@ -118,6 +119,14 @@ public class HttpManager {
 				CookieSpecPNames.SINGLE_COOKIE_HEADER, true);
 	}
 
+	/**
+	 * 获取HttpClient
+	 * @return
+	 */
+	public static DefaultHttpClient getHttpClient(){
+		return sHttpClient;
+	}
+	
 	public static void longTimeOut() {
 		HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_SOCKET_TIMEOUT);
 		HttpConnectionParams.setConnectionTimeout(httpParams,
@@ -142,18 +151,14 @@ public class HttpManager {
 	}
 
 	public static HttpResponse execute(HttpGet get) throws IOException {
-		System.out.println("-------------HttpManager get-------------");
 		return sHttpClient.execute(get);
 	}
 
 	public static HttpResponse execute(HttpPost post) throws IOException {
-		System.out.println("-------------HttpManager post-------------");
 		return sHttpClient.execute(post);
 	}
 
 	public static HttpResponse execute(HttpUriRequest post) throws IOException {
-		System.out
-				.println("-------------HttpManager HttpUriRequest post-------------");
 		return sHttpClient.execute(post);
 	}
 

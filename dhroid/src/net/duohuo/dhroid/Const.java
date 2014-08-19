@@ -6,6 +6,13 @@ package net.duohuo.dhroid;
  */
 public class Const {
 	
+	//打印日志
+	public static boolean logable=true;
+	//打印日志时打印行号
+	public static boolean logline=true;
+	
+	
+	
 	public static boolean net_error_try=false;
 	
 	public static boolean auto_inject=true;
@@ -32,8 +39,6 @@ public class Const {
 	public static String response_success = "success";
 	public static String response_msg = "msg";
 	public static String response_data = "data";
-	public static String response_total = "total";
-	public static String response_current = "current";
 	public static String response_code = "code";
 	public static int net_pool_size=10;
 	

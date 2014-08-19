@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import net.duohuo.dhroid.ioc.annotation.FieldsInjectable;
+
 import android.content.Context;
 
 /**
@@ -59,7 +61,7 @@ public class Instance {
 	//保存context时的对象
 	public Map<String,Object> objs;
 	
-	public static Stack<InjectFields> injected=new Stack<InjectFields>();
+	public static Stack<FieldsInjectable> injected=new Stack<FieldsInjectable>();
 	
 	public Object get(Context context) {
 		//获取单例
@@ -82,13 +84,13 @@ public class Instance {
 	}
 	
 	private void injectChild(Object obj){
-		if(obj instanceof InjectFields){
-			InjectFields f=(InjectFields) obj;
+		if(obj instanceof FieldsInjectable){
+			FieldsInjectable f=(FieldsInjectable) obj;
 			injected.push(f);
 			InjectUtil.inject(obj);
 			if(injected.get(0)==f){
 				while (!injected.isEmpty()) {
-					InjectFields popCall=injected.pop();
+					FieldsInjectable popCall=injected.pop();
 					popCall.injected();
 				}	
 			}
@@ -137,7 +139,6 @@ public class Instance {
 				}
 			}
 		}
-		
 		try {
 			if (construstor != null) {
 				obj= construstor.newInstance(context);
@@ -145,15 +146,10 @@ public class Instance {
 				obj= clazz.newInstance();
 			}
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
 		} catch (InstantiationException e) {
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
 		}
-		
 		if(obj!=null&&perpare!=null){
 			perpare.perpare(obj);
 		}

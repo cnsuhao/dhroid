@@ -18,11 +18,10 @@ import net.duohuo.dhroid.ioc.IocContainer;
 import net.duohuo.dhroid.net.cache.CacheManager;
 import net.duohuo.dhroid.net.cache.CachePolicy;
 import net.duohuo.dhroid.net.upload.CancelException;
-import net.duohuo.dhroid.net.upload.FileInfo;
-import net.duohuo.dhroid.net.upload.PostFile;
 import net.duohuo.dhroid.net.upload.ProgressMultipartEntity;
 import net.duohuo.dhroid.net.upload.ProgressMultipartEntity.ProgressListener;
 import net.duohuo.dhroid.util.NetworkUtils;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -31,8 +30,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Dialog;
 import android.text.TextUtils;
@@ -49,17 +46,26 @@ import android.widget.TextView;
  * @author duohuo-jinghao
  */
 public class DhNet {
+	
 	private String url = null;
 	private Map<String, Object> params = new HashMap<String, Object>();
+	private Map<String, File> files = new HashMap<String, File>();
+	
 	public static final String METHOD_GET = "GET";
 	public static final String METHOD_POST = "POST";
+	
 	private String method = "POST";
+	
 	Boolean isCanceled = false;
+	
 	Future<?> feture;
+	
 	NetTask task;
-	// 緩存管理
-	String dialogerMsg;
+	//对话框内容
+	String progressMsg;
+	
 	CacheManager cacheManager;
+	
 	CachePolicy cachePolicy = CachePolicy.POLICY_NOCACHE;
 
 	// 最后一次访问网络花费的时间
@@ -70,6 +76,7 @@ public class DhNet {
 	public DhNet() {
 		this(null);
 	}
+	
 	public DhNet(String url) {
 		this(url, null);
 	}
@@ -94,12 +101,15 @@ public class DhNet {
 	/**
 	 * 清空
 	 */
-	public void clean() {
-		params = new HashMap<String, Object>();
+	public void clear() {
+		params.clear();
 		if(globalParams!=null){
 			Map<String,String> globalparams=globalParams.getGlobalParams();
 			this.params.putAll(globalparams);
 		}
+		files.clear();
+		
+		
 	}
 
 	public Map<String, Object> getParams() {
@@ -225,6 +235,19 @@ public class DhNet {
 	}
 	
 	/**
+	 * get方法访问
+	 * @param task
+	 * @return
+	 */
+	public DhNet doGet(boolean dialog,String msg,NetTask task) {
+		this.method = METHOD_GET;
+		if(!TextUtils.isEmpty(msg)){
+			setProgressMsg(msg);
+		}
+		return dialog?execuseInDialog(task):execuse(task);
+	}
+	
+	/**
 	 * get方法访问 ,同时打开对话框
 	 * 
 	 * @param task
@@ -260,6 +283,20 @@ public class DhNet {
 		return this;
 	}
 	
+	/**
+	 * post方法访问 ,同时打开对话框
+	 * 
+	 * @param task
+	 * @return
+	 */
+	public DhNet doPostInDialog(String msg,NetTask task) {
+		if(!TextUtils.isEmpty(msg)){
+			setProgressMsg(msg);
+		}
+		this.method = METHOD_POST;
+		execuseInDialog(task);
+		return this;
+	}
 
 	static ExecutorService executorService;
 
@@ -330,13 +367,14 @@ public class DhNet {
 						Log.d("duohuo_DhNet", DhNet.this.url + " method: "
 								+ method + " params: " + params + " result: "
 								+ result);
+
+						
 						Response response = new Response(result);
 						response.isCache(false);
 						String code = response.getCode();
-//						if (code != null) {
-							DhNet.this.task.transfer(response,
+						
+						DhNet.this.task.transfer(response,
 									NetTask.TRANSFER_CODE);
-//						}
 						try {
 						DhNet.this.task.doInBackground(response);
 						}catch (Exception e) {
@@ -439,7 +477,7 @@ public class DhNet {
 	 * @return
 	 */
 	public DhNet execuseInDialog(NetTask task) {
-		String msg=dialogerMsg;
+		String msg=progressMsg;
 		if(TextUtils.isEmpty(msg)){
 			msg=method.toUpperCase().equals(METHOD_GET)?"加载中...":"提交中...";
 		}
@@ -507,44 +545,41 @@ public class DhNet {
 
 	public int TRANSFER_UPLOADING = -40000;
 
-	/**
-	 * 文件上传, 支持大文件的上传 和文件的上传进度更新 task inui response 的bundle参数 uploading true
-	 * 上传中,false 上传完毕 ; process 上传进度 0-100 cancel 方法可以取消上传
-	 * 
-	 * @param url
-	 * @param name
-	 * @param file
-	 * @param task
-	 */
-	public void upload(final String name, final File file, NetTask task) {
+	
+	public DhNet addFile( String name,  File file){
+		files.put(name, file);
+		return this;
+	}
+	
+	public void upload(NetTask task) {
 		this.task = task;
 		this.feture = executeRunalle(new Runnable() {
 			public void run() {
 				String url=DhNet.this.url;
-				NetEncrypt encypt=IocContainer.getShare().get(NetEncrypt.class);
-				if(encypt!=null){
-					url=encypt.encrypt(url);
-				}
 				HttpPost httpPost = new HttpPost(url);
-				final long fileLen = file.length();
+				long fileLen=0;
 				ProgressMultipartEntity mulentity = new ProgressMultipartEntity();
-
+				for (String key : files.keySet()) {
+					File file=files.get(key);
+					if(file==null)continue;
+					fileLen+= file.length();
+					FileBody filebody = new FileBody(file);
+					mulentity.addPart(key, filebody);
+				}
+				final long total=fileLen;
 				mulentity.setProgressListener(new ProgressListener() {
 
 					public void transferred(long num) {
 						Response response = new Response("{success:true}");
 						response.addBundle("uploading", true);
 						response.addBundle("length", num);
-						response.addBundle("total", fileLen);
+						response.addBundle("total", total);
 						DhNet.this.task.transfer(response, TRANSFER_UPLOADING);
 					}
-
 					public boolean isCanceled() {
 						return DhNet.this.isCanceled();
 					}
 				});
-				FileBody filebody = new FileBody(file);
-				mulentity.addPart(name, filebody);
 				try {
 					if (params != null) {
 						for (String key : params.keySet()) {
@@ -593,47 +628,23 @@ public class DhNet {
 				}
 			}
 		});
-
 	}
-
+	
+	
+	
 	/**
-	 * 小文件上传支持其他附加信息 不支持cookie
-	 * 
-	 * @param fileInfo
+	 * 文件上传, 支持大文件的上传 和文件的上传进度更新 task inui response 的bundle参数 uploading true
+	 * 上传中,false 上传完毕 ; process 上传进度 0-100 cancel 方法可以取消上传
+	 * @param url
+	 * @param name
+	 * @param file
 	 * @param task
 	 */
-	public void upload(final FileInfo fileInfo, NetTask task) {
-		this.task = task;
-		this.feture = executeRunalle(new Runnable() {
-			public void run() {
-				try {
-					String result = PostFile.getInstance().post(getUrl(),
-							params, fileInfo);
-					Log.d("duohuo_DhNet", DhNet.this.url + " method:" + method
-							+ " params: " + params + " result: " + result);
-					Response response = new Response(result);
-					response.isCache(false);
-					// 获取错误码
-					String code = response.getCode();
-					if (code != null) {
-						DhNet.this.task.transfer(response,
-								NetTask.TRANSFER_DOERROR);
-					}
-					DhNet.this.task.doInBackground(response);
-					if (!isCanceled) {
-						DhNet.this.task.transfer(response,
-								NetTask.TRANSFER_DOUI);
-					}
-				} catch (Exception e) {
-					String errorjson = "{'success':false,'msg':'网络访问超时','code':'netError'}";
-					Response response = new Response(errorjson);
-					response.addBundle("e", e);
-					DhNet.this.task
-							.transfer(response, NetTask.TRANSFER_DOERROR);
-				}
-			}
-		});
+	public void upload(final String name, final File file, NetTask task) {
+		addFile(name, file);
+		upload(task);
 	}
+	
 
 	/**
 	 * 获取cookie的值
@@ -658,7 +669,7 @@ public class DhNet {
 	public static void clearCookies() {
 		HttpManager.getCookieStore().clear();
 	}
-	public void setDialogerMsg(String dialogerMsg) {
-		this.dialogerMsg = dialogerMsg;
+	public void setProgressMsg(String progressMsg) {
+		this.progressMsg = progressMsg;
 	}
 }

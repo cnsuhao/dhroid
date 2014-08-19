@@ -42,7 +42,6 @@ public class ViewUtil {
 
 	}
 
-
 	/**
 	 * source 切换切换视图的显示
 	 * 
@@ -64,7 +63,7 @@ public class ViewUtil {
 		 * @param source
 		 * @param target
 		 * @param visiable
-		 *            target的可见型
+		 *        target的可见型
 		 */
 		public void before(View source, final View target, boolean visiable);
 
@@ -130,7 +129,8 @@ public class ViewUtil {
 		}
 		if (v instanceof ImageView) {
 			if (value instanceof String) {
-				ImageLoader.getInstance().displayImage((String)value,(ImageView) v);
+				ImageLoader.getInstance().displayImage((String) value,
+						(ImageView) v);
 			} else if (value instanceof Drawable) {
 				((ImageView) v).setImageDrawable((Drawable) value);
 			} else if (value instanceof Bitmap) {
@@ -151,9 +151,9 @@ public class ViewUtil {
 		if (v == null || value == null)
 			return;
 		if (v instanceof TextView) {
-			ValueFix fix=IocContainer.getShare().get(ValueFix.class);
-			if(fix!=null){
-				value=fix.fix(value, type);
+			ValueFix fix = IocContainer.getShare().get(ValueFix.class);
+			if (fix != null) {
+				value = fix.fix(value, type);
 			}
 			if (value instanceof CharSequence) {
 				((TextView) v).setText((CharSequence) value);
@@ -163,12 +163,13 @@ public class ViewUtil {
 		}
 		if (v instanceof ImageView) {
 			if (value instanceof String) {
-				ValueFix fix=IocContainer.getShare().get(ValueFix.class);
+				ValueFix fix = IocContainer.getShare().get(ValueFix.class);
 				DisplayImageOptions options = null;
-				if(fix!=null){
-					options=fix.imageOptions(type);
+				if (fix != null) {
+					options = fix.imageOptions(type);
 				}
-				ImageLoader.getInstance().displayImage((String)value,(ImageView) v,options);
+				ImageLoader.getInstance().displayImage((String) value,
+						(ImageView) v, options);
 			} else if (value instanceof Drawable) {
 				((ImageView) v).setImageDrawable((Drawable) value);
 			} else if (value instanceof Bitmap) {
@@ -177,7 +178,7 @@ public class ViewUtil {
 				((ImageView) v).setImageResource((Integer) value);
 			}
 		}
-		
+
 	}
 
 	public static boolean isEmpty(TextView... texts) {
@@ -192,6 +193,5 @@ public class ViewUtil {
 		}
 		return false;
 	}
-
 
 }

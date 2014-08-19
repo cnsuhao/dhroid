@@ -194,7 +194,7 @@ public class PhotoUtil {
 	public static String getRealPathFromURI(Activity activity, Uri contentUri) {
 		Cursor cursor = null;
 		String result = contentUri.toString();
-		String[] proj = { MediaColumns.DATA };
+		String[] proj = { MediaStore.Images.Media.DATA};
 		cursor = activity.managedQuery(contentUri, proj, null, null, null);
 		if (cursor == null)
 			throw new NullPointerException("reader file field");
@@ -281,6 +281,9 @@ public class PhotoUtil {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
+			}catch (Error e) {
+				System.gc();
+				return null;
 			}
 		}
 		return null;

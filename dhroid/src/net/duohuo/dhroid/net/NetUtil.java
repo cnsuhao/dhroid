@@ -36,8 +36,6 @@ public class NetUtil {
 	 */
 	public static String sync(String url, String method,
 			Map<String, Object> params) throws IOException {
-		
-		
 		StringBuffer sb = null;
 		InputStream in = syncStream(url, method, params);
 		if (in != null) {
@@ -65,11 +63,7 @@ public class NetUtil {
 	public static InputStream syncStream(String url, String method,
 			Map<String, Object> params) throws IOException {
 		HttpResponse response;
-		NetEncrypt encypt=IocContainer.getShare().get(NetEncrypt.class);
 		if (method.equalsIgnoreCase("POST")) {
-			if(encypt!=null){
-				url=encypt.encrypt(url);
-			}
 			HttpPost httppost = new HttpPost(url);
 			List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 			for (String key : params.keySet()) {
@@ -93,9 +87,6 @@ public class NetUtil {
 				}
 			}
 			url=url + encodeUrl(params);
-			if(encypt!=null){
-				url=encypt.encrypt(url);
-			}
 			HttpGet httpGet = new HttpGet(url);
 			response = HttpManager.execute(httpGet);
 		}

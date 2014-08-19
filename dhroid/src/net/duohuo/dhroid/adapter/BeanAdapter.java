@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.duohuo.dhroid.ioc.IocContainer;
+import net.duohuo.dhroid.view.HorizontalListView;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -42,7 +43,6 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 
 	private LayoutInflater mInflater;
 
-
 	public Map<Integer, InViewClickListener> canClickItem;
 
 	public boolean isReuse = true;
@@ -50,14 +50,15 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 	public Context mContext;
 
 	public ValueFix fixer;
-	
+
 	public Class jumpClazz;
 	public String jumpKey;
 	public String jumpAs;
+
 	public Class getJumpClazz() {
 		return jumpClazz;
 	}
-	
+
 	public String getJumpKey() {
 		return jumpKey;
 	}
@@ -66,12 +67,10 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 		return jumpAs;
 	}
 
-
-
-	public void setJump(Class jumpClazz,String jumpkey,String as) {
+	public void setJump(Class jumpClazz, String jumpkey, String as) {
 		this.jumpClazz = jumpClazz;
-		this.jumpKey=jumpkey;
-		this.jumpAs=as;
+		this.jumpKey = jumpkey;
+		this.jumpAs = as;
 	}
 
 	public BeanAdapter(Context context, int mResource, boolean isViewReuse) {
@@ -112,6 +111,7 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 
 	public void insert(int index, T one) {
 		synchronized (mLock) {
+			if(index<0)index=0;
 			mVaules.add(index, one);
 		}
 		if (mNotifyOnChange)
@@ -120,7 +120,9 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 
 	public void remove(int index) {
 		synchronized (mLock) {
-			mVaules.remove(index);
+			if (index < mVaules.size()&&index>=0) {
+				mVaules.remove(index);
+			}
 		}
 		if (mNotifyOnChange)
 			notifyDataSetChanged();
@@ -134,7 +136,6 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 			notifyDataSetChanged();
 	}
 
-
 	public void setNotifyOnChange(boolean notifyOnChange) {
 		mNotifyOnChange = notifyOnChange;
 	}
@@ -144,21 +145,28 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 	}
 
 	public Object getItem(int position) {
-		return mVaules.get(position);
+		if (position < mVaules.size()&&position>=0) {
+			mVaules.get(position);
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T getTItem(int position) {
-		return (T) mVaules.get(position);
+		if (position < mVaules.size()&&position>=0){
+			return (T) mVaules.get(position);
+		}
+		return null;
 	}
 
 	@Override
 	public long getItemId(int position) {
 		return position;
 	}
+
 	public String getTItemId(int position) {
 
-		return position+"";
+		return position + "";
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -202,7 +210,8 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 	 * @param v
 	 * @param o
 	 */
-	public void bindValue(final Integer position, View v, Object o,DisplayImageOptions options) {
+	public void bindValue(final Integer position, View v, Object o,
+			DisplayImageOptions options) {
 		if (o == null)
 			o = "";
 		if (v instanceof ImageView) {
@@ -214,7 +223,8 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 			} else if (o instanceof Integer) {
 				imagev.setImageResource((Integer) o);
 			} else if (o instanceof String) {
-				ImageLoader.getInstance().displayImage((String)o, (ImageView)v, options);
+				ImageLoader.getInstance().displayImage((String) o,
+						(ImageView) v, options);
 			}
 		} else if (v instanceof TextView) {
 			if (o instanceof CharSequence) {
@@ -260,8 +270,6 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 		return mDropDownResource;
 	}
 
-
-
 	public interface InViewClickListener {
 		public void OnClickListener(View parentV, View v, Integer position,
 				Object values);
@@ -272,20 +280,34 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 	 * 大家都用的viewholder
 	 * 
 	 */
-	public class ViewHolder {
+	public static class ViewHolder {
 		Map<Integer, View> views;
+		View itemV;
 
-		public ViewHolder() {
+		public static ViewHolder getHolder(View itemV) {
+			ViewHolder viewHolder = (ViewHolder) itemV.getTag();
+			if (viewHolder == null) {
+				viewHolder = new ViewHolder();
+				itemV.setTag(viewHolder);
+				viewHolder.itemV = itemV;
+			}
+			return viewHolder;
+		}
+
+		public View getView(Integer id) {
+			View v = views.get(id);
+			if (v == null) {
+				v = itemV.findViewById(id);
+				if (v != null) {
+					views.put(id, v);
+				}
+			}
+			return v;
+		}
+
+		private ViewHolder() {
 			super();
 			views = new HashMap<Integer, View>();
-		}
-
-		public void put(Integer id, View v) {
-			views.put(id, v);
-		}
-
-		public View get(Integer id) {
-			return views.get(id);
 		}
 
 	}

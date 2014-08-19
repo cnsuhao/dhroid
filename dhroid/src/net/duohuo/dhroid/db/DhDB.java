@@ -19,8 +19,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 /**
- * 数据库助手类  android的数据库实现了单表的增删改查就够了
+ * 数据库助手类 android的数据库实现了单表的增删改查就够了
+ * 
  * @author duohuo-jinghao
  */
 public class DhDB {
@@ -57,21 +59,33 @@ public class DhDB {
 			init(dbname, dbversion);
 		}
 	};
-	
+
 	/**
 	 * 保存
+	 * 
 	 * @param obj
 	 */
 	public void save(Object obj) {
 		if (obj == null)
 			return;
 		checkOrCreateTable(obj.getClass());
-		SqlProxy proxy = SqlProxy.insert(obj);
-		db.execSQL(proxy.getSql(), proxy.paramsArgs());
+		EntityInfo entity = EntityInfo.build(obj.getClass());
+		String pk = entity.pk;
+		Object pkvalue = BeanUtil.getProperty(obj, pk);
+		// 存在id就更新否则插入
+		if (pkvalue != null && !pkvalue.toString().equals("0")) {
+			SqlProxy proxy = SqlProxy.update(obj);
+			db.execSQL(proxy.getSql(), proxy.paramsArgs());
+		} else {
+			SqlProxy proxy = SqlProxy.insert(obj);
+			db.execSQL(proxy.getSql(), proxy.paramsArgs());
+		}
+
 	}
 
 	/**
 	 * 更新
+	 * 
 	 * @param obj
 	 */
 	public void update(Object obj) {
@@ -84,6 +98,7 @@ public class DhDB {
 
 	/**
 	 * 删除
+	 * 
 	 * @param obj
 	 */
 	public void delete(Object obj) {
@@ -93,28 +108,54 @@ public class DhDB {
 		SqlProxy proxy = SqlProxy.delete(obj);
 		db.execSQL(proxy.getSql(), proxy.paramsArgs());
 	}
+
+	/**
+	 * 批量删除
+	 * 
+	 * @param obj
+	 */
+	public void delete(Class clazz, String where, Object... args) {
+		checkOrCreateTable(clazz);
+		SqlProxy proxy = SqlProxy.delete(clazz, where, args);
+		db.execSQL(proxy.getSql(), proxy.paramsArgs());
+	}
+
+	/**
+	 * 清空
+	 * 
+	 * @param obj
+	 */
+	public void deleteAll(Class clazz) {
+		checkOrCreateTable(clazz);
+		EntityInfo entity = EntityInfo.build(clazz);
+		String sql = "DELETE FROM " + entity.table;
+		db.execSQL(sql);
+	}
+
 	/**
 	 * 执行
+	 * 
 	 * @param proxy
 	 */
 	public void execProxy(SqlProxy proxy) {
 		db.execSQL(proxy.getSql(), proxy.paramsArgs());
 	}
-	
+
 	/***
 	 * 加载
+	 * 
 	 * @param clazz
 	 * @param id
 	 * @return
 	 */
-	public <T> T  load(Class<T> clazz,Object id){
-		EntityInfo info=EntityInfo.build(clazz);
-		return	queryFrist(clazz, info.getPk()+"=?", id);
+	public <T> T load(Class<T> clazz, Object id) {
+		EntityInfo info = EntityInfo.build(clazz);
+		return queryFrist(clazz, info.getPk() + "=?", id);
 	}
-	
-	
+
 	/**
 	 * 查询
+	 * 
 	 * @param proxy
 	 * @return
 	 */
@@ -122,41 +163,35 @@ public class DhDB {
 		if (where.indexOf("limit") < -1) {
 			where += " limit 0,1";
 		}
-		List<T> list=	queryList(clazz, where, whereargs);
-		if(list==null||list.size()==0)return null;
+		List<T> list = queryList(clazz, where, whereargs);
+		if (list == null || list.size() == 0)
+			return null;
 		return list.get(0);
 	}
-	
-	
-	
+
 	/**
 	 * 查询
+	 * 
 	 * @param proxy
 	 * @return
 	 */
 	public <T> T queryFrist(SqlProxy proxy) {
-		String sql=proxy.getSql();
+		String sql = proxy.getSql();
 		if (sql.indexOf("limit") < -1) {
 			sql += " limit 0,1";
-			proxy=SqlProxy.select(proxy.getRelClass(), sql, proxy.paramsArgs());
+			proxy = SqlProxy.select(proxy.getRelClass(), sql,
+					proxy.paramsArgs());
 		}
-		List<T> list=queryList(proxy);
-		if(list!=null&&list.size()>0){
+		List<T> list = queryList(proxy);
+		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
 		return null;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 	/**
 	 * 查询
+	 * 
 	 * @param proxy
 	 * @return
 	 */
@@ -182,26 +217,28 @@ public class DhDB {
 
 	/**
 	 * 通过sql查询
+	 * 
 	 * @param clazz
 	 * @param sql
 	 * @param args
 	 * @return
 	 */
-	public <T> List<T> queryList(Class<T> clazz, String where, Object... whereargs) {
+	public <T> List<T> queryList(Class<T> clazz, String where,
+			Object... whereargs) {
 		checkOrCreateTable(clazz);
-		SqlProxy proxy=SqlProxy.select(clazz, where, whereargs);
+		SqlProxy proxy = SqlProxy.select(clazz, where, whereargs);
 		return queryList(proxy);
 	}
-	
+
 	public <T> List<T> queryAll(Class<T> clazz) {
 		checkOrCreateTable(clazz);
-		SqlProxy proxy=SqlProxy.select(clazz, null, null);
+		SqlProxy proxy = SqlProxy.select(clazz, null, null);
 		return queryList(proxy);
 	}
-	
-	
+
 	/**
 	 * 对象封装
+	 * 
 	 * @param cursor
 	 * @param clazz
 	 * @return
@@ -243,8 +280,11 @@ public class DhDB {
 						cursor.getString(cursor.getColumnIndex(column)));
 			} else if (field.getType().equals(Date.class)) {
 				try {
-					BeanUtil.setProperty(obj, key, new Date(cursor
-							.getLong(cursor.getColumnIndex(column))));
+					BeanUtil.setProperty(
+							obj,
+							key,
+							new Date(cursor.getLong(cursor
+									.getColumnIndex(column))));
 				} catch (Exception e) {
 				}
 			} else if (field.getType().equals(Boolean.class)
@@ -334,30 +374,31 @@ public class DhDB {
 
 		return null;
 	}
-	private static String getCreatTableSQL(Class<?> clazz){
-		EntityInfo info=EntityInfo.build(clazz);
+
+	private static String getCreatTableSQL(Class<?> clazz) {
+		EntityInfo info = EntityInfo.build(clazz);
 		StringBuffer sql = new StringBuffer();
 		sql.append("CREATE TABLE IF NOT EXISTS ");
 		sql.append(info.getTable());
 		sql.append(" ( ");
 		Map<String, String> propertys = info.getColumns();
-		Set<String> keys=propertys.keySet();
+		Set<String> keys = propertys.keySet();
 		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
 			String key = iterator.next();
 			sql.append(propertys.get(key));
-			Class<?> dataType = BeanUtil.getDeclaredField(clazz, key).getType(); 
-			if( dataType== int.class || dataType == Integer.class 
-			   || dataType == long.class || dataType == Long.class){
+			Class<?> dataType = BeanUtil.getDeclaredField(clazz, key).getType();
+			if (dataType == int.class || dataType == Integer.class
+					|| dataType == long.class || dataType == Long.class) {
 				sql.append(" INTEGER");
-			}else if(dataType == float.class ||dataType == Float.class 
-					||dataType == double.class || dataType == Double.class){
+			} else if (dataType == float.class || dataType == Float.class
+					|| dataType == double.class || dataType == Double.class) {
 				sql.append(" REAL");
-			}else if (dataType == boolean.class || dataType == Boolean.class) {
+			} else if (dataType == boolean.class || dataType == Boolean.class) {
 				sql.append(" NUMERIC");
 			}
-			if(key.equals(info.pk)){
+			if (key.equals(info.pk)) {
 				sql.append(" PRIMARY KEY");
-				if(info.pkAuto){
+				if (info.pkAuto) {
 					sql.append(" AUTOINCREMENT");
 				}
 			}
@@ -367,6 +408,7 @@ public class DhDB {
 		sql.append(" )");
 		return sql.toString();
 	}
+
 	/**
 	 * 删除所有数据表
 	 */

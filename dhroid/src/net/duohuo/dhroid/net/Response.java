@@ -52,13 +52,6 @@ public class Response {
 	public String msg;
 	// 错误码
 	public String code;
-
-	// 分页时当前页
-	public int current;
-
-	// 分页时总页
-	public int total;
-
 	// 获取默认返回jsonarray jo对象的缓存 不一定有值
 	JSONObject jo;
 
@@ -83,25 +76,16 @@ public class Response {
 					if (jo.has(Const.response_code)) {
 						code = JSONUtil.getString(jo, Const.response_code);
 					}
-					if (jo.has(Const.response_current)) {
-						current = JSONUtil.getInt(jo, Const.response_current);
-					}
-					if (jo.has(Const.response_total)) {
-						total = JSONUtil.getInt(jo, Const.response_total);
-					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-			}else if(result.trim().startsWith("[")){
-				//不处理
+			} else if (result.trim().startsWith("[")) {
+				// 不处理
 			}
-
 		}
-
 	}
 
 	/**
-	 * 
 	 * 添加传递数据 基本在后台线程添加 前台用getBundle 获取
 	 * 
 	 * @param key
@@ -255,28 +239,27 @@ public class Response {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 解析json结果 为bean
 	 * 
 	 * @return
 	 */
-	public <T> T modelFrom(Class<T> clazz,String prefix) {
+	public <T> T modelFrom(Class<T> clazz, String prefix) {
 		String str = JSONUtil.getString(jo, prefix);
 		Gson gson = new Gson();
 		T obj = gson.fromJson(str, clazz);
 		return obj;
 	}
-	
 
 	public <T> T modelFromData() {
 		return modelFrom(Const.response_data);
 	}
 
 	public <T> T modelFromData(Class<T> clazz) {
-		return modelFrom(clazz,Const.response_data);
+		return modelFrom(clazz, Const.response_data);
 	}
-	
+
 	/**
 	 * 获取json结果 对象中的某个属性 为对象 list
 	 * 
@@ -330,22 +313,6 @@ public class Response {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
-	}
-
-	public int getCurrent() {
-		return current;
-	}
-
-	public void setCurrent(int current) {
-		this.current = current;
-	}
-
-	public int getTotal() {
-		return total;
-	}
-
-	public void setTotal(int total) {
-		this.total = total;
 	}
 
 	public String getCode() {

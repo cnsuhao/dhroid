@@ -47,6 +47,8 @@ public class SqlProxy {
 		StringBuffer p=new StringBuffer("(");
 		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
 			String key = iterator.next();
+			//自增主键不管
+			if(key.equals(entity.pk)&&entity.pkAuto)continue;
 			proxy.sql.append(entity.getColumns().get(key)).append(",");
 			p.append("?,");
 			proxy.params.add(BeanUtil.getProperty(obj, key));
@@ -187,10 +189,6 @@ public class SqlProxy {
 	public static SqlProxy delete(Class clazz,String where,Object... whereargs){
 		SqlProxy	proxy=new SqlProxy();
 		EntityInfo entity=EntityInfo.build(clazz);
-		String pk=entity.getPk();
-		if(TextUtils.isEmpty(pk)){
-			throw new RuntimeException("主键不可为空");
-		}
 		proxy.sql.append("DELETE FROM ").append(entity.getTable());
 		proxy.clazz=clazz;
 		proxy.buildWhere(where, whereargs);

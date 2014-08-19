@@ -52,9 +52,10 @@ public class InjectUtil {
 	 * @param layoutResId
 	 */
 	public static void inject(Object obj) {
-		if(obj==null)return;
-		//本类中的所有属性
-		Field[] fields =getDeclaredFields(obj.getClass());
+		if (obj == null)
+			return;
+		// 本类中的所有属性
+		Field[] fields = getDeclaredFields(obj.getClass());
 		if (fields != null && fields.length > 0) {
 			for (Field field : fields) {
 				field.setAccessible(true);
@@ -77,20 +78,21 @@ public class InjectUtil {
 					injectStand(obj, field, inject);
 				}
 
-				if (obj instanceof Activity||obj instanceof Fragment) {
+				if (obj instanceof Activity || obj instanceof Fragment) {
 					// extra
 					InjectExtra extra = field.getAnnotation(InjectExtra.class);
 					if (extra != null) {
 						getExtras(obj, field, extra);
 					}
 				}
-				
-				InjectResource resource=field.getAnnotation(InjectResource.class);
-				if(resource!=null){
+
+				InjectResource resource = field
+						.getAnnotation(InjectResource.class);
+				if (resource != null) {
 					getResource(obj, field, resource);
 				}
-				InjectAssert as=field.getAnnotation(InjectAssert.class);
-				if(as!=null){
+				InjectAssert as = field.getAnnotation(InjectAssert.class);
+				if (as != null) {
 					getAssert(obj, field, as);
 				}
 			}
@@ -100,16 +102,16 @@ public class InjectUtil {
 
 	private static void getResource(Object obj, Field field,
 			InjectResource resource) {
-		Resources res=IocContainer.getShare().getApplication().getResources();
+		Resources res = IocContainer.getShare().getApplication().getResources();
 		Object value = null;
-		if(resource.color()!=0){
-			 value=res.getColor(resource.color());
-		}else if(resource.drawable()!=0){
-			value=res.getDrawable(resource.drawable());
-		}else if(resource.string()!=0){
-			 value=res.getString(resource.string());
-		}else if(resource.dimen()!=0){
-			value=res.getDimension(resource.dimen());
+		if (resource.color() != 0) {
+			value = res.getColor(resource.color());
+		} else if (resource.drawable() != 0) {
+			value = res.getDrawable(resource.drawable());
+		} else if (resource.string() != 0) {
+			value = res.getString(resource.string());
+		} else if (resource.dimen() != 0) {
+			value = res.getDimensionPixelSize(resource.dimen());
 		}
 		if (value != null) {
 			try {
@@ -274,8 +276,9 @@ public class InjectUtil {
 			Fragment fg = (Fragment) activity;
 			bundle = fg.getArguments();
 		}
-		if(bundle==null) bundle=new Bundle();
-		
+		if (bundle == null)
+			bundle = new Bundle();
+
 		try {
 			Object obj = null;
 			Class clazz = field.getType();
@@ -348,22 +351,27 @@ public class InjectUtil {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * 获取assert
+	 * 
 	 * @param activity
 	 * @param field
 	 * @param as
 	 */
-	private static void getAssert(final Object activity, final Field field, InjectAssert as) {
-		AssetManager manager=IocContainer.getShare().getApplication().getAssets();
-		Class clazz=field.getType();
-		Object value=null;
+	private static void getAssert(final Object activity, final Field field,
+			InjectAssert as) {
+		AssetManager manager = IocContainer.getShare().getApplication()
+				.getAssets();
+		Class clazz = field.getType();
+		Object value = null;
 		try {
-			final InputStream in=manager.open(as.path());
-			if(clazz.equals(InputStream.class)){
-				value=in;
+			final InputStream in = manager.open(as.path());
+			if (clazz.equals(InputStream.class)) {
+				value = in;
 			}
-			if(clazz.equals(String.class)||clazz.equals(JSONObject.class)||clazz.equals(JSONArray.class)){
+			if (clazz.equals(String.class) || clazz.equals(JSONObject.class)
+					|| clazz.equals(JSONArray.class)) {
 				if (in != null) {
 					Scanner scanner = new Scanner(in);
 					StringBuffer sb = new StringBuffer();
@@ -372,17 +380,17 @@ public class InjectUtil {
 					}
 					in.close();
 					scanner.close();
-					value=sb.toString();
+					value = sb.toString();
 				}
-				if(clazz.equals(JSONArray.class)){
-					value=new JSONArray(value.toString());
-				}else if(clazz.equals(JSONObject.class)){
-					value=new JSONObject(value.toString());
+				if (clazz.equals(JSONArray.class)) {
+					value = new JSONArray(value.toString());
+				} else if (clazz.equals(JSONObject.class)) {
+					value = new JSONObject(value.toString());
 				}
-			} else if(clazz.equals(File.class)){
-				File dir=FileUtil.getDir();
-				final File file=new File(dir,as.path());
-				if(!file.exists()){
+			} else if (clazz.equals(File.class)) {
+				File dir = FileUtil.getDir();
+				final File file = new File(dir, as.path());
+				if (!file.exists()) {
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
@@ -398,7 +406,7 @@ public class InjectUtil {
 					}).start();
 					return;
 				}
-				value=file;
+				value = file;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -468,16 +476,34 @@ public class InjectUtil {
 			e.printStackTrace();
 		}
 	}
+
 	private static Field[] getDeclaredFields(Class<?> clazz) {
 		List<Field> result = new ArrayList<Field>();
+		try {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				if (Modifier.isFinal(field.getModifiers())) {
+					continue;
+				}
+				if (Modifier.isStatic(field.getModifiers())) {
+					continue;
+				}
+				if ("serialVersionUID".equals(field.getName())) {// ingore
+					continue;
+				}
+				result.add(field);
+			}
+		} catch (Exception e) {
+		}
+		clazz = clazz.getSuperclass();
 		for (; isCommonClazz(clazz); clazz = clazz.getSuperclass()) {
 			try {
 				Field[] fields = clazz.getDeclaredFields();
 				for (Field field : fields) {
-					if(Modifier.isFinal(field.getModifiers())) {
+					if (Modifier.isFinal(field.getModifiers())) {
 						continue;
 					}
-					if(Modifier.isStatic(field.getModifiers())) {
+					if (Modifier.isStatic(field.getModifiers())) {
 						continue;
 					}
 					if ("serialVersionUID".equals(field.getName())) {// ingore
@@ -491,13 +517,17 @@ public class InjectUtil {
 		return result.toArray(new Field[0]);
 	}
 
-	private static  boolean isCommonClazz(Class<?> clazz){
-		String pkg=clazz.getPackage().getName();
-		boolean isok=pkg.startsWith("net.duohuo.dhroid")||pkg.startsWith(IocContainer.getShare().getApplicationContext().getPackageName());
-		if(isok)return true;
-		if(Const.ioc_instal_pkg!=null){
-			for (int i = 0; i <Const.ioc_instal_pkg.length; i++) {
-				if(pkg.startsWith(Const.ioc_instal_pkg[i]))return true;
+	private static boolean isCommonClazz(Class<?> clazz) {
+		String pkg = clazz.getPackage().getName();
+		boolean isok = pkg.startsWith("net.duohuo.dhroid")
+				|| pkg.startsWith(IocContainer.getShare()
+						.getApplicationContext().getPackageName());
+		if (isok)
+			return true;
+		if (Const.ioc_instal_pkg != null) {
+			for (int i = 0; i < Const.ioc_instal_pkg.length; i++) {
+				if (pkg.startsWith(Const.ioc_instal_pkg[i]))
+					return true;
 			}
 		}
 		return false;

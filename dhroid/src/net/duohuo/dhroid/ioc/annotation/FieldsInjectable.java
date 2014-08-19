@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.duohuo.dhroid.ioc;
+package net.duohuo.dhroid.ioc.annotation;
 
 /**
  * 表明需要对属性进行注入<br/>
@@ -10,7 +10,7 @@ package net.duohuo.dhroid.ioc;
  * @author duohuo-jinghao
  * @date 2014-3-17
  */
-public interface InjectFields {
+public interface FieldsInjectable {
 	//注入完成
 	public void injected();
 	

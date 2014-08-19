@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
@@ -33,8 +35,9 @@ import android.view.View;
  * @author duohuo-jinghao
  * 
  */
-public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapter {
-	
+public class NetJSONAdapter extends BeanAdapter<JSONObject> implements
+		INetAdapter {
+
 	public List<FieldMap> fields;
 	public DhNet dhnet;
 	private int pageNo = 0;
@@ -59,18 +62,20 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 	private String timelineParam = Const.netadapter_timeline;
 
 	private String timelineinjson = Const.netadapter_json_timeline;
-	
+
 	DataBulider dataBulider;
+
 	public DataBulider getDataBulider() {
 		return dataBulider;
 	}
-	
+
 	public void setDataBulider(DataBulider dataBulider) {
 		this.dataBulider = dataBulider;
 	}
 
 	/**
 	 * 设置时间线的参数
+	 * 
 	 * @param timelineParam
 	 * @param timelineinjson
 	 */
@@ -80,8 +85,9 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 	}
 
 	public void addAll(JSONArray ones) {
-		if(ones==null) return;
-		List<JSONObject> list=new ArrayList<JSONObject>();
+		if (ones == null)
+			return;
+		List<JSONObject> list = new ArrayList<JSONObject>();
 		for (int i = 0; i < ones.length(); i++) {
 			try {
 				list.add(ones.getJSONObject(i));
@@ -91,9 +97,10 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 		}
 		addAll(list);
 	}
-	
+
 	/**
-	 * 设置分页参数  page
+	 * 设置分页参数 page
+	 * 
 	 * @param pageParams
 	 */
 	public void setPageParams(String pageParams) {
@@ -114,29 +121,30 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 设置分页参数 step
+	 * 
 	 * @param stepParams
 	 */
 	public void setStepParams(String stepParams) {
 		this.stepParams = stepParams;
 
 	}
-	
+
 	/**
 	 * 清空参数
 	 */
 	public void cleanParams() {
-		dhnet.clean();
+		dhnet.clear();
 	}
 
 	/**
 	 * list加载段
+	 * 
 	 * @param fromWhat
 	 */
 	public void fromWhat(String fromWhat) {
 		this.fromWhat = fromWhat;
 	}
 
-	
 	public NetJSONAdapter(String api, Context context, int mResource) {
 		super(context, mResource);
 		dhnet = new DhNet(api);
@@ -155,9 +163,10 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 		dialoger = IocContainer.getShare().get(IDialog.class);
 		useCache(CachePolicy.POLICY_BEFORE_AND_AFTER_NET);
 	}
-	
+
 	/**
 	 * 修改url中的参数
+	 * 
 	 * @param tag
 	 * @param value
 	 * @return
@@ -168,6 +177,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 添加参数
+	 * 
 	 * @param key
 	 * @param value
 	 * @return
@@ -178,6 +188,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 添加参数
+	 * 
 	 * @param params
 	 * @return
 	 */
@@ -186,7 +197,29 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 	}
 	
 	/**
+	 * 添加参数
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public DhNet addParam(String key, Object value) {
+		return dhnet.addParam(key, value);
+	}
+
+	/**
+	 * 添加参数
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public DhNet addParams(Map<String, Object> params) {
+		return dhnet.addParams(params);
+	}
+
+	/**
 	 * 网络访问方法
+	 * 
 	 * @param mehtod
 	 * @return
 	 */
@@ -196,6 +229,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 取消网络访问
+	 * 
 	 * @param isInterrupt
 	 * @return
 	 */
@@ -205,6 +239,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 添加Field
+	 * 
 	 * @param key
 	 * @param refid
 	 * @return
@@ -217,6 +252,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 添加Field
+	 * 
 	 * @param key
 	 * @param refid
 	 * @param type
@@ -230,6 +266,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 添加Field
+	 * 
 	 * @param fieldMap
 	 * @return
 	 */
@@ -241,17 +278,17 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 	@Override
 	public String getTItemId(int position) {
 		JSONObject jo = getTItem(position);
-		String key=	getJumpKey();
-		if(TextUtils.isEmpty(key)){
-			key="id";
+		String key = getJumpKey();
+		if (TextUtils.isEmpty(key)) {
+			key = "id";
 		}
-		String id=JSONUtil.getString(jo, key);
-		if(TextUtils.isEmpty(id)){
-			id=position+"";
+		String id = JSONUtil.getString(jo, key);
+		if (TextUtils.isEmpty(id)) {
+			id = position + "";
 		}
 		return id;
 	}
-	
+
 	@Override
 	public long getItemId(int position) {
 		JSONObject jo = getTItem(position);
@@ -270,33 +307,26 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 	 */
 	@Override
 	public void bindView(View itemV, int position, JSONObject item) {
-		boolean newViewHolder = false;
 		// 使用大家的viewholder模式
-		ViewHolder viewHolder = (ViewHolder) itemV.getTag();
-		if (viewHolder == null) {
-			newViewHolder = true;
-			viewHolder = new ViewHolder();
-			itemV.setTag(viewHolder);
-		}
+		ViewHolder viewHolder = ViewHolder.getHolder(itemV);
 		JSONObject jo = (JSONObject) item;
 		for (Iterator<FieldMap> iterator = fields.iterator(); iterator
 				.hasNext();) {
 			FieldMap fieldMap = iterator.next();
-			View v = null;
-			if (newViewHolder) {
-				v = itemV.findViewById(fieldMap.getRefId());
-				viewHolder.put(fieldMap.getRefId(), v);
-			} else {
-				v = viewHolder.get(fieldMap.getRefId());
-			}
-
+			View v = viewHolder.getView(fieldMap.getRefId());
 			String value = JSONUtil.getString(jo, fieldMap.getKey());
 			if (fieldMap instanceof FieldMapImpl && fixer != null) {
 				Object gloValue = fixer.fix(value, fieldMap.getType());
-				bindValue(position, v, gloValue,fixer.imageOptions(fieldMap.getType()));
+				bindValue(position, v, gloValue,
+						fixer.imageOptions(fieldMap.getType()));
 			} else {
 				Object ovalue = fieldMap.fix(itemV, position, value, jo);
-				bindValue(position, v, ovalue,fixer.imageOptions(fieldMap.getType()));
+				DisplayImageOptions options=null;
+				if(fixer!=null){
+					options=fixer.imageOptions(fieldMap.getType());
+				}
+				bindValue(position, v, ovalue,
+						options);
 			}
 		}
 	}
@@ -308,7 +338,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 		if (!isLoading) {
 			hasMore = true;
 			pageNo = 0;
-			timeline=null;
+			timeline = null;
 			showNext();
 		}
 	}
@@ -317,11 +347,11 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 		if (!isLoading) {
 			hasMore = true;
 			pageNo = 0;
-			timeline=null;
+			timeline = null;
 			showNextInDialog();
 		}
 	}
-	
+
 	/**
 	 * 加载成功后的回调
 	 */
@@ -347,20 +377,17 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 		return this.hasMore;
 	}
 
-	
-	
 	/**
 	 * 网络任务处理
 	 */
 	NetTask nettask = new NetTask(mContext) {
 		@Override
 		public void doInBackground(Response response) {
-			//后台处理主要是数据封装
+			// 后台处理主要是数据封装
 			JSONArray array = null;
-			if(dataBulider!=null){
-				array=dataBulider.onDate(response);
-			}else
-			if (fromWhat == null) {
+			if (dataBulider != null) {
+				array = dataBulider.onDate(response);
+			} else if (fromWhat == null) {
 				array = response.jSONArrayFromData();
 			} else {
 				array = response.jSONArrayFrom(fromWhat);
@@ -417,6 +444,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 				}
 			}
 		}
+
 		@Override
 		public void onCancelled() {
 			super.onCancelled();
@@ -425,14 +453,16 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 				progressDialoger = null;
 			}
 		}
+
 		@Override
 		public void doInUI(Response response, Integer transfer) {
-			if(!response.isSuccess()&&!response.isCache()){
-				if(!TextUtils.isEmpty(response.msg)){
+			if (!response.isSuccess() && !response.isCache()) {
+				if (!TextUtils.isEmpty(response.msg)) {
 					dialoger.showToastShort(mContext, response.msg);
 				}
 			}
-			List<JSONObject> list = response.getBundle("list" + response.isCache());
+			List<JSONObject> list = response.getBundle("list"
+					+ response.isCache());
 			if (list.size() == 0) {
 				if (dialoger != null) {
 					if (!response.isCache()) {
@@ -449,13 +479,12 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 			}
 			addAll(list);
 			// 如果加载的收据不是来自缓存那么就不在使用缓存否者一直使用缓存
-			if(!response.isCache){
+			if (!response.isCache) {
 				useCache(CachePolicy.POLICY_NOCACHE);
-				isLoading = false;
 			}
-			
+			isLoading = false;
 			if (progressDialoger != null && progressDialoger.isShowing()) {
-				
+
 				progressDialoger.dismiss();
 				progressDialoger = null;
 			}
@@ -484,7 +513,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 			isLoading = true;
 		}
 		if (showProgressOnLoadFrist && pageNo == 0) {
-			if(NetworkUtils.isNetworkAvailable()){
+			if (NetworkUtils.isNetworkAvailable()) {
 				progressDialoger = dialoger.showProgressDialog(mContext, "加载中");
 			}
 		}
@@ -498,6 +527,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 第一也加载是否显示进度框
+	 * 
 	 * @param isShow
 	 */
 	public void showProgressOnFrist(boolean isShow) {
@@ -506,6 +536,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 设置分页数
+	 * 
 	 * @param step
 	 */
 	public void setStep(int step) {
@@ -530,26 +561,29 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 
 	/**
 	 * 是否可以在加载
+	 * 
 	 * @param hasmore
 	 */
 	public void hasMore(boolean hasmore) {
 		this.hasMore = hasmore;
 	}
+
 	/**
 	 * 使用默认缓存
 	 */
 	public void useCache() {
 		dhnet.useCache(true);
 	}
-	
+
 	/**
 	 * 使用缓存策略
+	 * 
 	 * @param policy
 	 */
 	public void useCache(CachePolicy policy) {
 		dhnet.useCache(policy);
 	}
-	
+
 	/**
 	 * 获取一个独特的tag
 	 */
@@ -580,8 +614,8 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements INetAdapt
 			loadSuccessCallBackList.remove(loadSuccessCallBack);
 		}
 	}
-	
-	public interface DataBulider{
+
+	public interface DataBulider {
 		public JSONArray onDate(Response response);
 	}
 

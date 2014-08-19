@@ -1,12 +1,6 @@
 package net.duohuo.dhroid.net.cache;
 
-import java.util.Date;
-
 import net.duohuo.dhroid.db.ann.Column;
-
-import android.os.Parcel;
-
-
 
 /**
  * 缓存对象

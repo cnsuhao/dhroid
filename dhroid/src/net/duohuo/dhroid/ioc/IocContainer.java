@@ -3,17 +3,15 @@ package net.duohuo.dhroid.ioc;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.duohuo.dhroid.ioc.Instance.AsAlians;
+import net.duohuo.dhroid.ioc.Instance.InstanceScope;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.view.LayoutInflater;
-
-import net.duohuo.dhroid.activity.ActivityTack;
-import net.duohuo.dhroid.ioc.Instance.AsAlians;
-import net.duohuo.dhroid.ioc.Instance.InstanceScope;
 
 /***
  * 实例容器
@@ -94,7 +92,8 @@ public class IocContainer {
 		Instance instance = instanceByClazz.get(clazz);
 		if (instance != null) {
 			return (T) instance.get(getApplicationContext());
-		} else {
+			// 接口过滤
+		} else if (!clazz.isInterface()) {
 			bind(clazz).to(clazz).scope(InstanceScope.SCOPE_SINGLETON);
 			Instance newins = instanceByClazz.get(clazz);
 			if (newins != null) {
@@ -134,20 +133,16 @@ public class IocContainer {
 		instance.setAsAlians(new AsAlians() {
 			public void as(Instance ins, String name, Class toClazz) {
 				if (name != null) {
-					if (!instanceByName.containsKey(name)) {
-						instanceByName.put(name, ins);
-					} else {
-						// 重复第一次的为准
-						// throw new IocException("name:"+name+"重复");
+					if (instanceByName.containsKey(name)) {
+						instanceByName.remove(name);
 					}
+					instanceByName.put(name, ins);
 				}
 				if (toClazz != null) {
-					if (!instanceByClazz.containsKey(toClazz)) {
-						instanceByClazz.put(toClazz, ins);
-					} else {
-						// 重复第一次的为准
-						// throw new IocException("class:"+toClazz+"重复");
+					if (instanceByClazz.containsKey(toClazz)) {
+						instanceByClazz.remove(toClazz);
 					}
+					instanceByClazz.put(toClazz, ins);
 				}
 			}
 		});
@@ -158,19 +153,20 @@ public class IocContainer {
 		return instanceByClazz.get(clazz);
 	}
 
+	@SuppressLint("ServiceCast")
 	@SuppressWarnings("unchecked")
 	public <T> T getSysService(Class<T> clazz) {
 		T t = null;
 		if (clazz == NotificationManager.class) {
 			t = (T) getApplicationContext().getSystemService(
 					Context.NOTIFICATION_SERVICE);
-		}else if(clazz==ActivityManager.class){
+		} else if (clazz == ActivityManager.class) {
 			t = (T) getApplicationContext().getSystemService(
 					Context.ACTIVITY_SERVICE);
-		}else if(clazz == PackageManager.class){
-			t=(T) getApplicationContext().getPackageManager();
-		}else if(clazz==AssetManager.class){
-			t=(T) getApplicationContext().getAssets();
+		} else if (clazz == PackageManager.class) {
+			t = (T) getApplicationContext().getPackageManager();
+		} else if (clazz == AssetManager.class) {
+			t = (T) getApplicationContext().getAssets();
 		}
 		return t;
 

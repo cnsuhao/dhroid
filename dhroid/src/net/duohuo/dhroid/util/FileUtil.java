@@ -51,6 +51,15 @@ public class FileUtil {
 	
 	
 	
+	public static File getDir(String name){
+		File file=new File(getDir().getAbsolutePath()+"/"+name);
+		if(!file.exists()){
+			file.mkdirs();
+		}
+		return file;
+	}
+	
+	
 	
 	
 	/**

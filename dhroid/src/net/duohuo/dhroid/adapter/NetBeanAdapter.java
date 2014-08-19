@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.duohuo.dhroid.Const;
@@ -91,7 +92,7 @@ public class NetBeanAdapter extends BeanAdapter implements INetAdapter {
 	}
 
 	public void cleanParams() {
-		dhnet.clean();
+		dhnet.clear();
 	}
 
 	public DhNet fixURl(String tag, Object value) {
@@ -294,7 +295,11 @@ public class NetBeanAdapter extends BeanAdapter implements INetAdapter {
 				bindValue(position, v, gloValue,fixer.imageOptions(fieldMap.getType()));
 			} else {
 				Object ovalue = fieldMap.fix(itemV, position, value, jo);
-				bindValue(position, v, ovalue,fixer.imageOptions(fieldMap.getType()));
+				DisplayImageOptions options=null;
+				if(fixer!=null){
+					options=fixer.imageOptions(fieldMap.getType());
+				}
+				bindValue(position, v, ovalue,options);
 			}
 		}
 	}

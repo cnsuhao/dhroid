@@ -140,8 +140,6 @@ public class ImageUtil {
 		Bitmap newbmp = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 		return newbmp;
 	}
-	
-	
 		/**
 		 * 获取获得带倒影的图片
 		 * @param bitmap
@@ -200,7 +198,7 @@ public class ImageUtil {
 	     * @param pixels 圆角的弧度
 	     * @return 圆角图片
 	     */
-	    public static Bitmap toRoundCorner(Bitmap bitmap, int pixels) {
+	    public static Bitmap toRoundCorner(Bitmap bitmap, int pixels){
 	        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
 	        Canvas canvas = new Canvas(output);
 	        final int color = 0xff424242;
@@ -212,10 +210,8 @@ public class ImageUtil {
 	        canvas.drawARGB(0, 0, 0, 0);
 	        paint.setColor(color);
 	        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	
 	        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
 	        canvas.drawBitmap(bitmap, rect, rect, paint);
-	
 	        return output;
 	    }
 	

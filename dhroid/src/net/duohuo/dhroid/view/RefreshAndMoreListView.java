@@ -4,6 +4,8 @@ import java.security.acl.LastOwnerException;
 
 import net.duohuo.dhroid.adapter.INetAdapter;
 import net.duohuo.dhroid.adapter.INetAdapter.LoadSuccessCallBack;
+import net.duohuo.dhroid.dialog.IDialog;
+import net.duohuo.dhroid.ioc.IocContainer;
 import net.duohuo.dhroid.net.Response;
 import android.content.Context;
 import android.os.Handler;
@@ -46,7 +48,7 @@ public class RefreshAndMoreListView extends ListView implements
 	// 加载更多完成
 	public final static int STATE_MORE_OK = 6;
 	// 实际的padding的距离与界面上偏移距离的比例
-	private final static int RATIO = 3;
+	private final static int RATIO = 2;
 	boolean isBack;
 	private View headView;
 	private View footView;
@@ -291,14 +293,15 @@ public class RefreshAndMoreListView extends ListView implements
 						}
 					}
 					if (state == STATE_PULL_To_More) {
+						
 						footView.setPadding(0, 0, 0, 1 * footContentHeight
 								+ ( startY  - tempY  ) / RATIO);
 
 					}
 					if (state == STATE_RELEASE_To_More) {
-						footView.setPadding(0, 0, 0, 1 * footContentHeight
-								+ ( startY  - tempY  ) / RATIO);
+						footView.setPadding(0, 0, 0, 1 * footContentHeight*(RATIO-1));
 					}
+//					IocContainer.getShare().get(IDialog.class).showToastShort(getContext(), footView.getPaddingBottom()+"");
 				}
 				
 				// handler.sendEmptyMessageDelayed(0, 2000);
