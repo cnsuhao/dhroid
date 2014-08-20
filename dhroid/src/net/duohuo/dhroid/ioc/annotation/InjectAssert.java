@@ -16,5 +16,6 @@ import java.lang.annotation.Target;
 public @interface InjectAssert {
 	
 	public String path() default "";
-
+	//文件注入时是异步,文件注入完成后会回调这个方法
+	public String fileInjected() default "";
 }

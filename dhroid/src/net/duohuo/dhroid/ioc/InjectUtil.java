@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,8 @@ import net.duohuo.dhroid.ioc.annotation.InjectAssert;
 import net.duohuo.dhroid.ioc.annotation.InjectExtra;
 import net.duohuo.dhroid.ioc.annotation.InjectResource;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
+import net.duohuo.dhroid.thread.Task;
+import net.duohuo.dhroid.thread.ThreadWorker;
 import net.duohuo.dhroid.util.FileUtil;
 
 import org.json.JSONArray;
@@ -360,7 +364,7 @@ public class InjectUtil {
 	 * @param as
 	 */
 	private static void getAssert(final Object activity, final Field field,
-			InjectAssert as) {
+			final InjectAssert as) {
 		AssetManager manager = IocContainer.getShare().getApplication()
 				.getAssets();
 		Class clazz = field.getType();
@@ -391,10 +395,11 @@ public class InjectUtil {
 				File dir = FileUtil.getDir();
 				final File file = new File(dir, as.path());
 				if (!file.exists()) {
-					new Thread(new Runnable() {
+					ThreadWorker.execuse(false,new Task(Ioc.getApplicationContext()) {
 						@Override
-						public void run() {
-							FileUtil.write(in, file);
+						public void doInBackground() {
+							super.doInBackground();
+								FileUtil.write(in, file);
 							try {
 								field.set(activity, file);
 							} catch (IllegalArgumentException e) {
@@ -403,8 +408,40 @@ public class InjectUtil {
 								e.printStackTrace();
 							}
 						}
-					}).start();
+						@Override
+						public void doInUI(Object obj, Integer what) {
+							if(!TextUtils.isEmpty(as.fileInjected()) ){
+								try {
+									Method method=activity.getClass().getDeclaredMethod(as.fileInjected());
+									method.invoke(activity);
+								} catch (NoSuchMethodException e) {
+									e.printStackTrace();
+								} catch (IllegalAccessException e) {
+									e.printStackTrace();
+								} catch (IllegalArgumentException e) {
+									e.printStackTrace();
+								} catch (InvocationTargetException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					});
 					return;
+				}else{
+					if(!TextUtils.isEmpty(as.fileInjected()) ){
+						try {
+							Method method=activity.getClass().getDeclaredMethod(as.fileInjected());
+							method.invoke(activity);
+						} catch (NoSuchMethodException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 				value = file;
 			}

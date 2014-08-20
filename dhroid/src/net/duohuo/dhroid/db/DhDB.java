@@ -3,7 +3,6 @@ package net.duohuo.dhroid.db;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 import net.duohuo.dhroid.ioc.IocContainer;
 import net.duohuo.dhroid.util.BeanUtil;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -77,8 +75,11 @@ public class DhDB {
 			SqlProxy proxy = SqlProxy.update(obj);
 			db.execSQL(proxy.getSql(), proxy.paramsArgs());
 		} else {
-			SqlProxy proxy = SqlProxy.insert(obj);
-			db.execSQL(proxy.getSql(), proxy.paramsArgs());
+			InsertProxy proxy = InsertProxy.insert(obj);
+			long pkv=db.insert(proxy.table, null, proxy.values);
+			if(pkv>0){
+				BeanUtil.setProperty(obj, pk,pkv);
+			}
 		}
 
 	}
