@@ -3,12 +3,12 @@
  */
 package net.duohuo.dhroiddemos.eventbus;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
 import net.duohuo.dhroiddemos.R;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
 
 /**
  *	
@@ -21,7 +21,8 @@ public class EventBusActivity extends BaseActivity{
 	View toTest;
 	@InjectView(id=R.id.button2,click="toTest")
 	View toTest2;
-	
+	@InjectView(id = R.id.button3, click = "toTest")
+	View toTest3;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class EventBusActivity extends BaseActivity{
 			break;
 		case R.id.button2:
 			it.setClass(this, EventBusAnnActivity.class);
+		case R.id.button3:
+			it.setClass(this, MyFragmentActivity.class);
 			break;
 		default:
 			break;

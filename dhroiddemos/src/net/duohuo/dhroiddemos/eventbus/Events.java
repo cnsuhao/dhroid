@@ -18,4 +18,8 @@ public class Events {
 	 * 事件二,两个参数
 	 */
 	public static final String event_test2="event_test2";
+	
+	public static final String event_test3="event_test3";
+	public static final String event_reset="event_reset";
+	public static final String event_test4="event_test4";
 }

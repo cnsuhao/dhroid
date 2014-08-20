@@ -54,6 +54,8 @@ public class IocTestActivity extends BaseActivity{
 	//注入时建议向下兼容,如果你的layout中是一个button且不需要换文字,请注入View,这样可以在将布局修改为image时前台不会出错
 	@InjectView(id=R.id.assertFile,click="toInstal")
 	View instalApkV;
+	@InjectView(id = R.id.toFrag, click = "toFrag")
+	View toFragV;
 	@InjectView(id=R.id.child_layout)
 	ViewGroup childLayoutV;
 	//注入布局文件
@@ -168,5 +170,9 @@ public class IocTestActivity extends BaseActivity{
 		Intent i = new Intent(Intent.ACTION_VIEW);
 		i.setDataAndType(Uri.parse("file://" +  apkFile.getAbsolutePath()),"application/vnd.android.package-archive");
 		startActivity(i);
+	}
+	public void toFrag(){
+		Intent it=new Intent(this,MyFragmentActivity.class);
+		startActivity(it);
 	}
 }

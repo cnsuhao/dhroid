@@ -1,5 +1,7 @@
 package net.duohuo.dhroiddemos.db;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import net.duohuo.dhroid.activity.BaseActivity;
 import net.duohuo.dhroid.db.DhDB;
+import net.duohuo.dhroid.dialog.IDialog;
 import net.duohuo.dhroid.ioc.annotation.Inject;
 import net.duohuo.dhroid.ioc.annotation.InjectExtra;
 import net.duohuo.dhroid.ioc.annotation.InjectView;
@@ -35,7 +38,8 @@ public class DbStudentSetActivity extends BaseActivity {
 	@InjectExtra(name = "id")
 	Long id;
 	Student student;
-
+	@Inject
+	IDialog dialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,7 +71,16 @@ public class DbStudentSetActivity extends BaseActivity {
 		student.setAge(Integer.parseInt(ageV.getText().toString()));
 		student.setDangyuang(dangyuanV.getText().toString().equals("1") ? true
 				: false);
-		student.setCreateTime(new Date());
+		SimpleDateFormat formdate=new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			student.setCreateTime(formdate.parse("2013-11-08"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		//保存和更新使用同一方法,原update方法保留
+		db.save(student);
+		dialog.showToastShort(this, "对象的主键为:"+student.getId());
 		//保存和更新使用同一方法,原update方法保留
 		db.save(student);
 		finish();
