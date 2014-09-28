@@ -146,7 +146,7 @@ public abstract class BeanAdapter<T> extends BaseAdapter {
 
 	public Object getItem(int position) {
 		if (position < mVaules.size()&&position>=0) {
-			mVaules.get(position);
+			return	mVaules.get(position);
 		}
 		return null;
 	}
