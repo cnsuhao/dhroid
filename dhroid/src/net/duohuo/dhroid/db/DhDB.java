@@ -141,6 +141,12 @@ public class DhDB {
 	public void execProxy(SqlProxy proxy) {
 		db.execSQL(proxy.getSql(), proxy.paramsArgs());
 	}
+	
+	
+	public void execSql(String sql,Object... args) {
+		db.execSQL(sql, args);
+	}
+	
 
 	/***
 	 * 加载

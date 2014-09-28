@@ -150,8 +150,10 @@ public class SqlProxy {
 		Set<String> keys=entity.getColumns().keySet();
 		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
 			String key = iterator.next();
-			proxy.sql.append(entity.getColumns().get(key)).append("=? ,");
-			proxy.params.add(values.get(key));
+			if(values.get(key)!=null){
+				proxy.sql.append(entity.getColumns().get(key)).append("=? ,");
+				proxy.params.add(values.get(key));
+			}
 		}
 		proxy.sql.deleteCharAt(proxy.sql.length()-1);
 		proxy.clazz=clazz;
