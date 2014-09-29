@@ -15,6 +15,7 @@ import android.content.Context;
  */
 public class ActivityTack {
 	
+	
 	public 	 List<Activity> activityList=new ArrayList<Activity>();
 	
 	public static ActivityTack tack=new ActivityTack();
