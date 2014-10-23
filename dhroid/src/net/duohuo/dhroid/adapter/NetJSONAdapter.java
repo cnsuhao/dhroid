@@ -53,6 +53,7 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements
 	public String stepParams = Const.netadapter_step;
 
 	Boolean isLoading = false;
+	boolean singleList=false;
 	Dialog progressDialoger;
 	// 第一页加载时显示对话框
 	public boolean showProgressOnLoadFrist = true;
@@ -474,6 +475,9 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements
 				}
 				hasMore = false;
 			}
+			if(singleList){
+				hasMore=false;
+			}
 			if (pageNo == 1) {
 				clear();
 			}
@@ -605,6 +609,10 @@ public class NetJSONAdapter extends BeanAdapter<JSONObject> implements
 		return "";
 	}
 
+	//只有单页没有更多
+	public void singleList(){
+		singleList=true;
+	}
 	/**
 	 * 移除成功回调
 	 */

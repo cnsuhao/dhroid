@@ -416,24 +416,7 @@ public class DhDB {
 		return sql.toString();
 	}
 
-	/**
-	 * 删除所有数据表
-	 */
-	public void dropDb() {
-		Cursor cursor = db
-				.rawQuery(
-						"SELECT name FROM sqlite_master WHERE type ='table' AND name != 'sqlite_sequence'",
-						null);
-		if (cursor != null) {
-			while (cursor.moveToNext()) {
-				db.execSQL("DROP TABLE " + cursor.getString(0));
-			}
-		}
-		if (cursor != null) {
-			cursor.close();
-			cursor = null;
-		}
-	}
+
 
 	class SqliteDbHelper extends SQLiteOpenHelper {
 
@@ -447,7 +430,25 @@ public class DhDB {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			dropDb();
+			this.dropDb(db);
+		}
+		/**
+		 * 删除所有数据表
+		 */
+		public void dropDb(SQLiteDatabase db) {
+			Cursor cursor = 
+					db.rawQuery(
+							"SELECT name FROM sqlite_master WHERE type ='table' AND name != 'sqlite_sequence'",
+							null);
+			if (cursor != null) {
+				while (cursor.moveToNext()) {
+					db.execSQL("DROP TABLE " + cursor.getString(0));
+				}
+			}
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
 		}
 
 	}
